@@ -1,0 +1,38 @@
+{
+    "control": {
+        "hosts": {
+            "ubuntu-c": {
+                "ansible_connection": "local"
+            }
+        }
+    }, 
+    "ubuntu": {
+        "hosts": {
+            "ubuntu1": null, 
+            "ubuntu2": null, 
+            "ubuntu3": null
+        }, 
+        "vars": {
+            "ansible_become": true, 
+            "ansible_become_pass": "password"
+        }
+    }, 
+    "centos": {
+        "hosts": {
+            "centos3": null, 
+            "centos2": null, 
+            "centos1": {
+                "ansible_port": 2222
+            }
+        }, 
+        "vars": {
+            "ansible_user": "root"
+        }
+    }, 
+    "linux": {
+        "children": {
+            "centos": null, 
+            "ubuntu": null
+        }
+    }
+}

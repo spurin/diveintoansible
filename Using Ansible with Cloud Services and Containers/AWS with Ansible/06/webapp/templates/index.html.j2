@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+    <title>Mastering Ansible</title>
+    <style>
+        html {
+            font: normal normal 105%/1.7 sans-serif
+        }
+
+        .container {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 30px;
+            padding: 0 1.5rem
+        }
+
+        .grid {
+            margin-left: -3%;
+            max-width: 105%
+        }
+
+        .unit {
+            display: inline-block;
+            *display: inline;
+            *zoom: 1;
+            vertical-align: top;
+            margin-left: 3%;
+            margin-right: -.25em;
+            overflow: hidden;
+            *overflow: visible
+        }
+
+        #menu li {
+            float: right;
+            margin-right: 1.0em;
+            list-style: none
+        }
+
+        #menu a {
+            text-decoration: none;
+            color: #696969;
+            font-size: 100%
+        }
+
+        #menu a:visited {
+            text-decoration: none;
+            color: #696969
+        }
+
+        .span-grid {
+            width: 97%
+        }
+
+        h1 {
+            font-family: sans-serif;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 1.0;
+            letter-spacing: -0.05555556em;
+            font-size: 60px;
+            font-size: 3.4em;
+            font-shadow: none;
+            color: #333;
+        }
+
+        h2,
+        .beta {
+            font-family: sans-serif;
+            font-size: 40px;
+            font-size: 1.7rem;
+            font-weight: 500;
+            color: #696969;
+            line-height: 1.5;
+            letter-spacing: -0.05555556em
+        }
+
+        p,
+        ul,
+        hr,
+        form,
+        h1,
+        .alpha,
+        h2,
+        .beta {
+            margin-bottom: 30px;
+            margin-bottom: 1.5rem
+        }
+
+        img {
+            height: auto;
+        }
+
+        .head {
+            height: 150px;
+        }
+
+        .intro {
+            float: right;
+            margin: 1.0em;
+            max-width: 60%;
+        }
+
+        @media screen and (max-width:650px) {
+            img {
+                height: auto;
+                color: #c00
+            }
+            .intro {
+                float: right;
+                margin: 1.0em;
+                max-width: 100%;
+            }
+            .grid {
+                margin-left: 0;
+                max-width: none
+            }
+            .unit {
+                width: auto;
+                margin-left: 0;
+                display: block
+            }
+            .head {
+                height: 100px
+            }
+            h1 {
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-style: normal;
+                font-weight: 600;
+                line-height: 1.0;
+                letter-spacing: -0.05555556em;
+                font-size: 50px;
+                font-size: 2.0rem;
+                font-shadow: none;
+                color: #333
+            }
+            html {
+                font-size: 90%:line-height:normal
+            }
+            #menu {
+                display: none;
+            }
+            img {
+                height: auto;
+                border: 0;
+            }
+            .intro {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
+    </style>
+</head>
+
+<body id="top">
+    <div class="container">
+        <div class="grid">
+            <div class="unit span-grid">
+                <div class="head">
+                    <br>
+                    <a style="float:left;" href="https://packt.com/"><img src="data:image/png;base64,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" alt="packt" width="200" height="75"></a>
+                </div>
+                <div class="unit span-grid">
+
+                    <img src="
+                              {%- if ansible_distribution == 'CentOS' -%}
+                              {{ centos_logo }}
+                              {%- elif ansible_distribution == 'Ubuntu' -%}
+                              {{ ubuntu_logo }}
+                              {%- elif ansible_distribution == 'RedHat' -%}
+                              {{ redhat_logo }}
+                              {%- endif %}
+" class="intro" alt="mainpic">
+                    <h1>Mastering Ansible</h1>
+                    <p>{{ ansible_managed }}</p>
+                    <br>
+                    <p>Welcome to the Mastering Ansible Course, I'm your host for this, James Spurin, in this course we'll be covering the following:
+                    </p>
+                    
+                    <h2>Installation and Configuration of Ansible</h2>
+                    <p>The various options available for installing and building Ansible.  The use of python virtual environments with pip installation from both pypi and github.  The configuration of control hosts for Windows, Mac OS X and Linux and guidance on the use of a preconfigured 8 node virtual machine lab that can be used for the course
+
+                    </p>
+                    <h2>Ansible Architecture and Design</h2>
+                    <p>Indepth examination and exploration of the architecture and design of Ansible, through the use of Inventories, Modules, Playbooks, Variables, Facts and templating with Jinja2
+                    </p>
+                    
+                    <h2>Ansible Playbooks, Advanced Topics</h2>
+                    <p>A deep dive into the Ansible core modules.  The creation and execution of dynamic inventories.  Making use of when conditionals.  Registering and reusing output.  Exploring the various options for loop structures, Asynchronous and Parallel execution.  Task Delegation.  Magic Variables.  Blocks.  The Ansible Vault.  Creating Custom Modules and Creating Plugins
+                    </p>
+                    
+                    <h2>Structuring Ansible Playbooks</h2>
+                    <p>Restructuring Playbooks to make use of includes, imports, tags and roles along with an investigation of the various states and behaviours that will influence usage considerations.
+                    </p>
+                    
+                    <h2>Using Ansible with Cloud Services and Containers</h2>
+                    <p>Exploring Cloud and Container services through hands on examples with Amazon AWS and Docker automation through Ansible
+                    </p>
+                    
+                    <h2>Other Ansible Resources and Areas</h2>
+                    <p>Troubleshooting Ansible, Validation Testing, Best Practices and Upgrading Ansible
+                    </p>
+                    
+                    <hr>
+                    
+                    <p>by <a href="https://uk.linkedin.com/in/jamesspurin">James Spurin</a>
+                    <p>Page layout and inline base64 guidelines, credit to <a href="https://plus.google.com/u/0/115535413488555890288?rel=author">Patrick Sexton</a> of varvy.com, check out his awesome site! 
+
+
+
+                    </p>
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+    </div>
+
+</body>
+
+</html>

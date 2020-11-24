@@ -1,0 +1,3 @@
+---
+# defaults file for webapp
+target_dir: /var/www/html

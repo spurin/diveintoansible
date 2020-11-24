@@ -1,0 +1,27 @@
+---
+# YAML documents begin with the document separator ---
+
+# The minus in YAML this indicates a list item.  The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+  # Hosts: where our play will run and options it will run with
+  hosts: all
+
+  # Tasks: the list of tasks that will be executed within the play, this section
+  # can also be used for pre and post tasks
+  tasks:
+    - name: Ansible Jinja2 if variable is defined ( where variable is defined )
+      debug:
+        msg: >
+             --== Ansible Jinja2 if variable is defined ( where variable is defined ) ==--
+
+             {% set example_variable = 'defined' -%}
+             {% if example_variable is defined -%}
+                example_variable is defined
+             {% else -%}
+                example_variable is not defined
+             {% endif %}
+
+# Three dots indicate the end of a YAML document
+...

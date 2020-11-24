@@ -1,0 +1,57 @@
+---
+# YAML documents begin with the document separator ---
+
+# The minus in YAML this indicates a list item.  The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+  # Hosts: where our play will run and options it will run with
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  # Tasks: the list of tasks that will be executed within the play, this section
+  # can also be used for pre and post tasks
+  tasks:
+    - name: Create a security group in AWS for SSH access and HTTP
+      ec2_group:
+         name: ansible
+         description: Ansible Security Group
+         region: us-east-1
+         rules:
+            - proto: tcp
+              from_port: 80
+              to_port: 80
+              cidr_ip: 0.0.0.0/0
+            - proto: tcp
+              from_port: 22
+              to_port: 22
+              cidr_ip: 0.0.0.0/0
+
+    - name: Provision a set of instances
+      ec2:
+         key_name: ansible
+         group: ansible
+         instance_type: t2.micro
+         image: ami-096fda3c22c1c990a
+         region: us-east-1
+         wait: true
+         exact_count: 20
+         count_tag:
+            Name: AnsibleNginxWebservers
+         instance_tags:
+            Name: Ansible
+      register: ec2
+
+    - name: Add all instance public IPs to host group
+      add_host:
+        hostname: "{{ item.public_ip }}"
+        groups: ansiblehosts
+      with_items: "{{ ec2.instances }}"
+
+    - name: Show group
+      debug:
+        var: groups.ansiblehosts
+
+# Three dots indicate the end of a YAML document
+...

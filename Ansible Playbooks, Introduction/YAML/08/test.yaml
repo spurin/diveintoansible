@@ -1,0 +1,7 @@
+# Every YAML file should start with three dashes
+---
+
+example_integer: 1
+ 
+# Every YAML file should end with three dots
+...

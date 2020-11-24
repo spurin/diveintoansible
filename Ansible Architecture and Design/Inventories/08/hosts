@@ -1,0 +1,12 @@
+[control]
+ubuntu-c ansible_connection=local
+
+[centos]
+centos1 ansible_user=root ansible_port=2222
+centos2 ansible_user=root
+centos3 ansible_user=root
+
+[ubuntu]
+ubuntu1 ansible_become=true ansible_become_pass=password
+ubuntu2 ansible_become=true ansible_become_pass=password
+ubuntu3 ansible_become=true ansible_become_pass=password

@@ -1,0 +1,18 @@
+---
+external_example_key: example value
+
+external_dict:
+   dict_key: This is a dictionary value
+
+external_inline_dict: 
+   {inline_dict_key: This is an inline dictionary value}
+
+external_named_list:
+   - item1
+   - item2
+   - item3
+   - item4
+
+external_inline_named_list:
+   [ item1, item2, item3, item4 ]
+...

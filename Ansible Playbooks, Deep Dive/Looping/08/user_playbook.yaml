@@ -1,0 +1,29 @@
+---
+# YAML documents begin with the document separator ---
+ 
+# The minus in YAML this indicates a list item.  The playbook contains a list
+# of plays, with each play being a dictionary
+-
+ 
+  # Hosts: where our play will run and options it will run with
+  hosts: linux
+ 
+  # Tasks: the list of tasks that will be executed within the playbook
+  tasks:
+    - name: Removing user
+      user:
+        name: "{{ item.key }}"
+        comment: "{{ item.value.full_name }}"
+        state: absent
+      with_dict: 
+        james: 
+          full_name: James Spurin
+        hayley: 
+          full_name: Hayley Spurin
+        lily: 
+          full_name: Lily Spurin
+        anwen:
+          full_name: Anwen Spurin
+ 
+# Three dots indicate the end of a YAML document
+...

@@ -1,0 +1,22 @@
+---
+# YAML documents begin with the document separator ---
+ 
+# The minus in YAML this indicates a list item.  The playbook contains a list
+# of plays, with each play being a dictionary
+-
+ 
+  # Hosts: where our play will run and options it will run with
+  hosts: linux
+ 
+  # Tasks: the list of tasks that will be executed within the playbook
+  tasks:
+    - name: Create authorized key
+      authorized_key:
+        user: james
+        key: "{{ item }}"
+      with_file:
+        - /home/ansible/.ssh/id_rsa.pub
+        - custom_key.pub
+
+# Three dots indicate the end of a YAML document
+...

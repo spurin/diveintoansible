@@ -1,0 +1,31 @@
+---
+# Every YAML file should start with three dashes
+
+# false, False, FALSE, no, No, NO, off, Off, OFF
+# true, True, TRUE, yes, Yes, YES, on, On, ON
+
+# n.b. n does not equal false, y does not equal true
+
+is_false_01: false
+is_false_02: False
+is_false_03: FALSE
+is_false_04: no
+is_false_05: No
+is_false_06: NO
+is_false_07: off
+is_false_08: Off
+is_false_09: OFF
+is_false_10: n
+is_true_01: true
+is_true_02: True
+is_true_03: TRUE
+is_true_04: yes
+is_true_05: Yes
+is_true_06: YES
+is_true_07: on
+is_true_08: On
+is_true_09: ON
+is_true_10: y
+
+# Every YAML file should end with three dots
+...

@@ -1,0 +1,31 @@
+---
+# YAML documents begin with the document separator ---
+
+# The minus in YAML this indicates a list item.  The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+  # Hosts: where our play will run and options it will run with
+  hosts: all
+
+  # Tasks: the list of tasks that will be executed within the play, this section
+  # can also be used for pre and post tasks
+  tasks:
+    - name: Using template, create a remote file that contains all variables available to the play
+      template:
+        src: templates/dump_variables
+        dest: /tmp/ansible_variables
+
+    - name: Fetch the templated file with all variables, back to the control host
+      fetch:
+        src: /tmp/ansible_variables
+        dest: "captured_variables/{{ ansible_hostname }}"
+        flat: yes
+
+    - name: Clean up left over files
+      file: 
+        name: /tmp/ansible_variables
+        state: absent
+
+# Three dots indicate the end of a YAML document
+...

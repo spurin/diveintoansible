@@ -1,0 +1,7 @@
+---
+# handlers file for nginx
+
+- name: Check HTTP Service
+  uri:
+    url: http://{{ ansible_default_ipv4.address }}
+    status_code: 200 

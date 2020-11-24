@@ -1,0 +1,37 @@
+---
+# YAML documents begin with the document separator ---
+
+# The minus in YAML this indicates a list item.  The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+  # Hosts: where our play will run and options it will run with
+  hosts: ubuntu-c
+  
+  # Tasks: the list of tasks that will be executed within the play, this section
+  # can also be used for pre and post tasks
+  tasks:
+    - name: Pull images
+      docker_image:
+        docker_host: tcp://docker:2375
+        name: "{{ item }}"
+        source: pull
+      with_items:
+        - centos
+        - ubuntu
+        - redis
+        - nginx
+        # n.b. large image, >1GB
+        - wernight/funbox
+
+    - name: Create an nginx container
+      docker_container:
+        docker_host: tcp://docker:2375
+        name: containerwebserver
+        image: nginx
+        ports:
+          - 80:80
+        container_default_behavior: no_defaults
+
+# Three dots indicate the end of a YAML document
+...

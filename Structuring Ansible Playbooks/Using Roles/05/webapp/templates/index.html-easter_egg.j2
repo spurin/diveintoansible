@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+    <title>Dive Into Ansible</title>
+    <style>
+        html {
+            background-color: #069cff; font: normal normal 105%/1.7 sans-serif; color: #FFFFFFB3
+        }
+
+        .container {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 30px;
+            padding: 0 1.5rem
+        }
+
+        .grid {
+            margin-left: -3%;
+            max-width: 105%
+        }
+
+        .unit {
+            display: inline-block;
+            *display: inline;
+            *zoom: 1;
+            vertical-align: top;
+            margin-left: 3%;
+            margin-right: -.25em;
+            overflow: hidden;
+            *overflow: visible
+        }
+
+        #menu li {
+            float: right;
+            margin-right: 1.0em;
+            list-style: none
+        }
+
+        #menu a {
+            text-decoration: none;
+            color: #FFFFFF;
+            font-size: 100%
+        }
+
+        #menu a:visited {
+            text-decoration: none;
+            color: #696969
+        }
+
+        .span-grid {
+            width: 97%
+        }
+
+        h1 {
+            font-family: sans-serif;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 1.0;
+            letter-spacing: -0.05555556em;
+            font-size: 60px;
+            font-size: 3.4em;
+            font-shadow: none;
+            color: #FFFFFF;
+        }
+
+        h2,
+        .beta {
+            font-family: sans-serif;
+            font-size: 40px;
+            font-size: 1.7rem;
+            font-weight: 500;
+            color: #FFFFFF;
+            line-height: 1.5;
+            letter-spacing: -0.05555556em
+        }
+
+        p,
+        ul,
+        hr,
+        form,
+        h1,
+        .alpha,
+        h2,
+        .beta {
+            margin-bottom: 30px;
+            margin-bottom: 1.5rem
+        }
+
+        img {
+            height: auto;
+        }
+
+        .head {
+            height: 150px;
+        }
+
+        .intro {
+            float: right;
+            margin: 1.0em;
+            max-width: 60%;
+        }
+
+        @media screen and (max-width:650px) {
+            img {
+                height: auto;
+                color: #c00
+            }
+            .intro {
+                float: right;
+                margin: 1.0em;
+                max-width: 100%;
+            }
+            .grid {
+                margin-left: 0;
+                max-width: none
+            }
+            .unit {
+                width: auto;
+                margin-left: 0;
+                display: block
+            }
+            .head {
+                height: 100px
+            }
+            h1 {
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-style: normal;
+                font-weight: 600;
+                line-height: 1.0;
+                letter-spacing: -0.05555556em;
+                font-size: 50px;
+                font-size: 2.0rem;
+                font-shadow: none;
+                color: #333
+            }
+            html {
+                font-size: 90%:line-height:normal
+            }
+            #menu {
+                display: none;
+            }
+            img {
+                height: auto;
+                border: 0;
+            }
+            .intro {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
+    </style>
+</head>
+
+<body id="top">
+    <div class="container">
+        <div class="grid">
+            <div class="unit span-grid">
+                <div class="head">
+                    <br>
+                    <a style="float:left;" href="https://diveinto.com/"><img src="data:image/png;base64,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" alt="diveinto" width="250" height="52"></a>
+                </div>
+                <div class="unit span-grid">
+
+		    <a href="playbook_stacker"><img src="
+                              {%- if ansible_distribution == 'CentOS' -%}
+                              {{ centos_logo }}
+                              {%- elif ansible_distribution == 'Ubuntu' -%}
+                              {{ ubuntu_logo }}
+                              {%- endif %}
+" class="intro" alt="mainpic"></a>
+                    <h1>Dive Into Ansible</h1>
+                    <p>{{ ansible_managed }}</p>
+                    <br>
+                    <p>Welcome to the Dive Into Ansible Course, I'm your host for this, James Spurin, in this course we'll be covering the following:</p>
+                    
+                    <h2>Course Overview and Introduction to Ansible</h2>
+                    <p>An introduction to your Instructor and Ansible, with a breakdown of the history of Ansible and an overview of the Ansible core components</p>
+
+                    <h2>Setup of the Lab Environment and Course Resources</h2>
+                    <p>The installation and configuration of the prerequisites for the lab, covering the process for Mac OS X, Windows and Ubuntu.  With the prerequisites configured, we install and configure the Ansible Lab, providing us with an Ansible Control Host and 6 Linux systems, 3 being Ubuntu and another 3 being CentOS with hosts accessible from your web browser.  We then configure the course code resources</p>
+
+                    <h2>Ansible Architecture and Design</h2>
+                    <p>Examination and exploration of the Architecture and Design of Ansible with the use of the Ansible Configuration, Inventories and Modules</p>
+
+                    <h2>Ansible Playbooks, Introduction</h2>
+                    <p>An Introduction to Ansible Playbooks, we start with the playbook language of YAML.  We cover the various sections of a Playbook.  The use of variables within Ansible and how these relate to Playbooks, Ansible Facts, Templating with Jinja2 and using the knowledge aquired in this section, we create a fully fledged webserver and website using Ansible</p>
+                    
+                    <h2>Ansible Playbooks, Deep Dive</h2>
+                    <p>A deep dive into the Ansible Modules.  The creation and execution of Dynamic inventories, the use of when conditionals to register and reuse output.  We will exploring the various options for loop structures.  We'll look at performance with Asynchronous and Parallel execution, how to delegate tasks with Task Delegation, Ansible's Magic Variables, Blocks and the Ansible Vault</p>
+                    
+                    <h2>Structuring Ansible Playbooks</h2>
+                    <p>Restructuring Playbooks to make use of Includes, Imports, Tags and Roles along with an investigation of the various states and behaviours that will influence usage considerations</p>
+                    
+                    <h2>Using Ansible with Cloud Services and Containers</h2>
+                    <p>Exploring Cloud and Container services through hands on examples with Amazon AWS and Docker automation through Ansible</p>
+
+                    <h2>Creating Modules and Plugins</h2>
+                    <p>The creation of the Modules and Plugins using the extensible Ansible framework</p>
+                    
+                    <h2>Other Ansible Resources and Areas</h2>
+                    <p>Troubleshooting Ansible and Best Practices</p>
+
+                    <h2>Supplementary</h2>
+		    <p>Supplementary information related to the course</p>
+                    
+                    <hr>
+                    
+		    <p>by <a href="https://uk.linkedin.com/in/jamesspurin">James Spurin</a></p>
+		    <p>Page layout and inline base64 guidelines, credit to Patrick Sexton of varvy.com, check out his awesome site!</p>
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,15 @@
+---
+# YAML documents begin with the document separator ---
+
+# The minus in YAML this indicates a list item.  The playbook contains a list
+# of plays, with each play being a dictionary
+
+# import_playbook is static
+#
+# Each task that is in the playbook in the import will be independently executed against
+# the when condition
+- import_playbook: imported_playbook.yaml
+  when: import_playbook_var is not defined
+
+# Three dots indicate the end of a YAML document
+...

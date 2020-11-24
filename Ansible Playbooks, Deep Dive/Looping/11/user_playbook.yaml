@@ -1,0 +1,42 @@
+---
+# YAML documents begin with the document separator ---
+ 
+# The minus in YAML this indicates a list item.  The playbook contains a list
+# of plays, with each play being a dictionary
+-
+ 
+  # Hosts: where our play will run and options it will run with
+  hosts: linux
+ 
+  # Tasks: the list of tasks that will be executed within the playbook
+  tasks:
+    - name: Creating user
+      user:
+        name: "{{ item.1 }}"
+        comment: "{{ item.1 | title }} {{ item.0.surname }}"
+        # https://docs.ansible.com/ansible/latest/plugins/lookup/password.html
+        password: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters,digits,hexdigits,punctuation') | password_hash('sha512') }}"
+      with_subelements:
+        -
+          - surname: Spurin
+            members:
+             - james
+             - hayley
+             - lily
+             - anwen
+          - surname: Darlington
+            members:
+             - freya
+          - surname: Jalba
+            members:
+             - ana
+          - surname: Angne
+            members:
+             - abhishek
+          - surname: Mahmood
+            members:
+             - sara
+        - members
+
+# Three dots indicate the end of a YAML document
+...

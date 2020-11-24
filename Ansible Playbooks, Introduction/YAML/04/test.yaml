@@ -1,0 +1,9 @@
+# Every YAML file should start with three dashes
+---
+
+no_quotes: this is a string example\n
+double_quotes: "this is a string example\n"
+single_quotes: 'this is a string example\n'
+ 
+# Every YAML file should end with three dots
+...

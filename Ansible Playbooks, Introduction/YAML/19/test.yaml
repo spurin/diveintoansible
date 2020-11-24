@@ -1,0 +1,19 @@
+---
+# Every YAML file should start with three dashes
+
+example_dictionary_1:
+  - example_dictionary_2:
+    - 1
+    - 2
+    - 3
+  - example_dictionary_2:
+    - 4
+    - 5
+    - 6
+  - example_dictionary_4:
+    - 7
+    - 8
+    - 9
+
+# Every YAML file should end with three dots
+...

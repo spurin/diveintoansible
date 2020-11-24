@@ -1,0 +1,61 @@
+---
+# YAML documents begin with the document separator ---
+
+# The minus in YAML this indicates a list item.  The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+  # Hosts: where our play will run and options it will run with
+  hosts: linux
+
+  # Tasks: the list of tasks that will be executed within the play, this section
+  # can also be used for pre and post tasks
+  tasks:
+
+    - name: Make Facts Dir
+      file:
+        path: /home/ansible/facts.d
+        recurse: yes
+        state: directory
+        owner: ansible
+
+    - name: Copy Fact 1
+      copy:
+        src: facts.d/getdate1.fact
+        dest: /home/ansible/facts.d/getdate1.fact
+        owner: ansible
+        mode: 0755
+
+    - name: Copy Fact 2
+      copy:
+        src: facts.d/getdate2.fact
+        dest: /home/ansible/facts.d/getdate2.fact
+        owner: ansible
+        mode: 0755
+
+    - name: Reload Facts
+      setup:
+        fact_path: /home/ansible/facts.d
+
+    - name: Show IP Address
+      debug:
+        msg: "{{ ansible_default_ipv4.address }}"
+
+    - name: Show Custom Fact 1
+      debug:
+        msg: "{{ ansible_local.getdate1.date }}"
+
+    - name: Show Custom Fact 2
+      debug:
+        msg: "{{ ansible_local.getdate2.date.date }}"
+
+    - name: Show Custom Fact 1 in hostvars
+      debug:
+        msg: "{{ hostvars[ansible_hostname].ansible_local.getdate1.date }}"
+
+    - name: Show Custom Fact 2 in hostvars
+      debug:
+        msg: "{{hostvars[ansible_hostname].ansible_local.getdate2.date.date }}"
+
+# Three dots indicate the end of a YAML document
+...

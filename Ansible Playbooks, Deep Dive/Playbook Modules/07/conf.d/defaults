@@ -1,0 +1,6 @@
+## Defaults
+
+Port 22
+Protocol 2
+ForwardX11 yes
+GSSAPIAuthentication no
