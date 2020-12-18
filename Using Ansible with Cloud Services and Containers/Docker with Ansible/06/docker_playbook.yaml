@@ -41,6 +41,7 @@
     - name: Remove files
       file:
         path: "{{ item }}"
+        state: absent
       with_items:
         - /shared/Dockerfile
         - /shared/index.html
