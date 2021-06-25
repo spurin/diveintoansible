@@ -64,7 +64,7 @@
 
     - name: Unarchive playbook stacker game
       unarchive:
-        src: playbook_stacker.zip
+        src: playbook_stacker.zip # Video incorrectly included 'templates/' as prefix, please ignore
         dest: "{{ nginx_root_location }}"
         mode: 0755
       tags:
