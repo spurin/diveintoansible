@@ -4,9 +4,6 @@
 Dynamic inventory for Ansible in Python
 '''
 
-# Use print functionality from Python 3 for compatibility
-from __future__ import print_function
-
 import argparse
 import logging
 
