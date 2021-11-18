@@ -7,8 +7,9 @@
 
   # Hosts: where our play will run and options it will run with
   hosts: ubuntu
-  gather_facts: yes
-  user: root
+  #gather_facts: no
+  #user: root
+  become: yes
 
   # Vars: variables that will apply to the play, on all target systems
   #Vars:
@@ -17,10 +18,10 @@
   # Tasks: the list of tasks that will be executed within the play, this section
   #       can also be used for pre and post tasks
   tasks:
-    - name: Deploy 60- to targets > /etc/update-motd.d/
+    - name: Deploy 60-ansible-motd to targets > /etc/update-motd.d/
       copy:
         src: ./60-ansible-motd
-        dest: /etc/motd.d/
+        dest: /etc/update-motd.d/
       notify: Debug, if there is a change
 
 
