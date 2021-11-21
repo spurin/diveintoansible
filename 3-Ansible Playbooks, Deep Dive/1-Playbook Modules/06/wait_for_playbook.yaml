@@ -1,0 +1,19 @@
+---
+# YAML documents begin with the document separator ---
+
+# The minus in YAML this indicates a list item.  The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+  # Hosts: where our play will run and options it will run with
+  hosts: ubuntu3,centos3
+
+  # Tasks: the list of tasks that will be executed within the play, this section
+  # can also be used for pre and post tasks
+  tasks:
+    - name: Wait for the webserver to be running on port 80
+      wait_for:
+        port: 80
+
+# Three dots indicate the end of a YAML document
+...
