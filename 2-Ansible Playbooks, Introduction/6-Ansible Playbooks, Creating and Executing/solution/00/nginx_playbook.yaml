@@ -4,15 +4,61 @@
 # The minus in YAML this indicates a list item.  The playbook contains a list
 # of plays, with each play being a dictionary
 -
-
   # Hosts: where our play will run and options it will run with
+  hosts: linux
 
   # Vars: variables that will apply to the play, on all target systems
 
   # Tasks: the list of tasks that will be executed within the play, this section
   # can also be used for pre and post tasks
+  tasks:
+    - name: Install Epel
+      tags: install_epel
+      dnf:
+        update_cache: yes
+        name: epel-release
+        state: latest
+      when: ansible_distribution == 'CentOS'
+
+    #- name: Install Nginx CentOS
+      #dnf:
+        #update_cache: yes
+        #name: nginx 
+        #state: latest
+      #when: ansible_distribution == "CentOS"
+
+    #- name: Install Nginx Ubuntu
+      #apt:
+        #update_cache: yes
+        #name: nginx
+        #state: latest
+      #when: ansible_distribution == "Ubuntu"
+    - name: Install Nginx Ubuntu and CentOS
+      tags: install_nginx
+      package:
+        update_cache: yes
+        name: nginx
+        state: latest
+
+    - name: Restart Nginx
+      tags: restart_nginx
+      service:
+        name: nginx
+        enabled: yes
+        state: restarted
+      notify: Check http Service
+
+    - name: Template index.html-base.j2 to index.html on target
+      template:
+        src: index.html-base.j2
+        dest: "{{ nginx_root_location }}/index.html"
+        mode: 0644    
 
   # Handlers: the list of handlers that are executed as a notify key from a task
-
+  handlers:  
+    - name: Check http Service
+      uri:
+        url: http://{{ ansible_default_ipv4.address }}
+        status_code: 200
 # Three dots indicate the end of a YAML document
 ...
