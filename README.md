@@ -1,9 +1,7 @@
 ## Dive Into Ansible Course Code Repository
 
-![Follow](https://shields.io/twitter/follow/jamesspurin?label=Follow)
-![GitHub Stars](https://shields.io/github/stars/spurin/diveintoansible?style=social)
-![GitHub Stars](https://shields.io/github/forks/spurin/diveintoansible?style=social)
-![GitHub Stars](https://shields.io/docker/pulls/spurin/diveintoansible)
+[![Follow](https://shields.io/twitter/follow/jamesspurin?label=Follow)](https://twitter.com/jamesspurin)
+[![GitHub Stars](https://shields.io/docker/pulls/spurin/diveintoansible)](https://hub.docker.com/r/spurin/diveintoansible)
 
 ✨ This repository provides the content for DiveInto.com's 'Dive Into Ansible' course ✨
 
