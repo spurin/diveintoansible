@@ -3,6 +3,8 @@
 
 - debug:
     msg: Include tasks executed
+  tags:
+    - include_tasks
 
 # Three dots indicate the end of a YAML document
 ...
