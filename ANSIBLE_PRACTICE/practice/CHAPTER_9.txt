@@ -1,0 +1,25 @@
+$mkdir -p /home/user/galaxy
+$cd /home/user/galaxy
+$ansible-galaxy init mysql
+$ll /home/user/galaxy/mysql
+..
+..
+$vi /home/user/galaxy/mysql/meta/main.yml
+$vi /home/user/galaxy/mysql/tasks/main.yml
+$ansible-galaxy search elastic
+$vi /home/user/galaxy/install-role.yml
+---
+- hosts: localhost
+  become: yes
+  tasks:
+    - name: install role
+      command: ansible-galaxy install elastic.elasticsearch
+
+$ansible-playbook install-role.yml
+$ll /etc/ansible/roles/
+elastic.elasticsearch
+$less /etc/ansible/roles/elastic.elasticsearch/README.md
+$sudo ansible-galaxy remove elastic.elasticsearch
+$ll /etc/ansible/roles/
+total gone, including dependencies for elastic
+

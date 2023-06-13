@@ -1,0 +1,30 @@
+---
+- hosts: all
+  user: ansible
+  become: no
+  gather_facts: no
+  tasks:
+    - name: schedule a command to execute in 20 minute as the ansible user.
+      at:
+        command: df -h > /tmp/diskspace
+        count: 20
+        units: minutes
+
+##ansible-playbook at-scheduled-task.yml
+#atq   // to check what jobs are in queue, you can see the current job in queue.
+
+---
+- hosts: all
+  user: ansible
+  become: no
+  gather_facts: no
+  tasks:
+    - name: schedule a command to execute in 20 minute as the ansible user.
+      at:
+        command: df -h > /tmp/diskspace
+        count: 20
+        units: minutes
+        state: absent   // to delete the 'at'
+
+##ansible-playbook at-scheduled-task.yml
+#atq   // to check what jobs are in queue, you will not see job in queue.

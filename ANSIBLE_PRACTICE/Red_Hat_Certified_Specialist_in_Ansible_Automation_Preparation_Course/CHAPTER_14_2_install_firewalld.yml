@@ -1,0 +1,14 @@
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: install firewalld
+      action: yum name=firewalld state=installed
+    - name: Enable firewalld on sytem boot
+      service: name=firewalld enabled=yes
+    - name: start service firewalld, if not started
+      service:
+        name: firewalld
+        state: started

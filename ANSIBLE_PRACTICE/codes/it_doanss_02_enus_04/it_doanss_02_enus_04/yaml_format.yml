@@ -1,0 +1,55 @@
+---
+# comments denoted with '#' character
+
+# here is a list programming languages
+languages:
+  - c++
+  - java
+  - python
+
+# vendor record
+vendor1:
+  name: joe vendor
+  product: widget
+  color: black
+
+# vendor records
+- vendor1:
+    name: joe vendor
+    product: widget
+    color:
+      - black
+      - green
+      - red
+- vendor2:
+    name: dalton vendor
+    product: widget
+    color:
+      - blue
+      - orange
+      - red
+
+# dictonary in abbreviated format
+vendor1: {name: joe vendor, product: widget, color: black}
+
+# list in abbreviated format
+languages: ['c++', 'java', 'python']
+
+# boolean values
+use_agent: yes
+use_agent: no
+use_agent: True
+use_agent: TRUE
+use_agent: false
+
+# spanning multiple lines
+scalar: |
+    these lines will
+    appear exactly as
+    they are written here
+
+folded: >
+    really just a single
+    line of text to make
+    easier to read and exit
+...

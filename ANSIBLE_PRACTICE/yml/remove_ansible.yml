@@ -1,0 +1,9 @@
+---
+
+- hosts : test-ubuntu
+
+  tasks : 
+   - name : Clean unwanted olderstuff (remove ansible)
+     apt :
+        name : ansible
+        state : absent

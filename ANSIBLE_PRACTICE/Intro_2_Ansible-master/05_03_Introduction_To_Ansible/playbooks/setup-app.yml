@@ -1,0 +1,40 @@
+# setup-app.yml
+
+---
+  - hosts: webservers
+    become: true
+
+    vars:
+      path_to_app: "/var/www/html"
+ 
+    tasks:
+      - name: Upload application file
+        copy:
+          src: ../index.php
+          dest: "{{ path_to_app }}"
+          mode: 0755
+
+      - name: Create simple info page
+        copy:
+          dest: "{{ path_to_app }}/info.php"
+          content: "<h1> Info about our webserver {{ ansible_hostname }} </h1>"
+
+      - name: See directory contents
+        command: ls -la {{ path_to_app }}
+        register: dir_contents
+
+      - name: Debug directory contents
+        debug:
+          msg: "{{ dir_contents }}"
+
+      - name: Configure php.ini file
+        lineinfile:
+          path: /etc/php.ini
+          regexp: ^short_open_tag
+          line: 'short_open_tag=On'
+        notify: restart apache
+
+    handlers:
+      - name: restart apache
+        service: name=httpd state=restarted
+        

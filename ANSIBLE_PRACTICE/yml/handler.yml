@@ -1,0 +1,22 @@
+--- # handler example
+-  hosts: abcserver
+     become: yes
+     vars:
+       httpd log level: error
+     tasks:
+       - name : install httpd
+           yum:
+             name: httpd
+             state: latest
+       - name: udate configuration
+           template: 
+             src: /home/ansible/httpd.conf.j2
+             dest: /etc/httpd/conf/httpd.conf
+           notify: httpd service
+     handlers: 
+       - name: https service
+           service:
+             name: httpd
+             state: restarted
+         listen: httpd service
+#$ ansible-playbook  handler.yml

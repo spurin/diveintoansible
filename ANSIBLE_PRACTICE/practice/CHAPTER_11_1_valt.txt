@@ -1,0 +1,73 @@
+The ansible-vault command allows file encription and requires a password to unencript.
+
+$echo "this is abc" > secret.txt
+$cat secret.txt
+this is abc
+$ansible-vault encript secret.txt
+New Vault password:
+Confirm New Vault password:
+Encrytion seccessful
+
+$cat secret.txt
+sssssnnnnnndllllllllo999999elllddddddd999999dd99d
+jkklkkkdfdfdfslfk;slkf;sdkf;sdkf;ksdfksd;fksdkf;d
+kljfdsfjsfdskf;sdkf;skdf;ksd;fkds;fkd;skf;kf;dskf
+
+$ansible-vault edit secret.txt
+$ansible-vault view secret.txt
+$ansible-vault decrypt secret.txt
+$ansible-vault encrypt_string 'this is tiger' -n meaning
+Enter New Vault password.
+Encryption successful
+
+$ansible-vault encrypt_string 'this is tiger' -n meaning --vault-id dev@prompt
+Assigning a label to encrytion data like 'dev'
+=================================================
+
+---
+- hosts: localhost
+  vars_files:
+    - /home/user/vault/secure
+  tasks:
+  - name: Output message
+    shell: echo {{ message }} > /home/user/vault/deployed.txt
+
+$cat vault
+passwprd
+$ansible-vault encrypt --vault-id prod@vault secure
+Encripted sucesfully
+
+$cat secure
+ansible vault :prod
+dfdfdfdfdfdfdfdfdfdfdfd
+fdfdfdfdfdfdfdfdfdfdfdf
+$ansbile-playbook vault.yml
+ERROR attempting to decrypt
+
+$ansible-playbook vault.yml --vault-id prod@vault
+$ansible-playbook -v vault.yml --vault-id prod@vault
+
+===================
+---
+- hosts: localhost
+  vars_files:
+    - /home/user/vault/secure
+  tasks:
+  - name: Output message
+    shell: echo {{ message }} > /home/user/vault/deployed.txt
+    no_log: true  //encripted value will be censored
+
+$ansible-playbook -v vault.yml --vault-id prod@vault
+
+==================
+[ansible@control1 ~]$ ansible-vault view /home/ansible/secret
+Vault password:
+secure_user: bond
+secure_password: james
+$echo 'abc' > vault_name1
+$ansible-playbook --vault-password-file vault_name1 secPage.yml 
+//vault_name1 file has the password, and '/home/ansible/secret' file being used in the playbook is encrypted one.
+
+[ansible@control1 ~]$ curl -u bond http://node1/secure/classified.html
+Enter host password for user 'bond':
+It's always sunny in Moscow this time of year....

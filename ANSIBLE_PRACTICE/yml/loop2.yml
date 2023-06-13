@@ -1,0 +1,11 @@
+--- #loop example2
+- hosts: localhost
+    become: yes
+    vars files:
+      - vars.yml
+    tasks:
+      - name: Check services
+          service:
+            name: "{{ item }}"
+            state: started
+          loop: "{{ service_list }}"

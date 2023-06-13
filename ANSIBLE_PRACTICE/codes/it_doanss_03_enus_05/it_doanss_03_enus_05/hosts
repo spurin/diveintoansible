@@ -1,0 +1,9 @@
+[webservers]
+10.0.3.3
+10.0.3.73
+
+[ntpservers]
+10.0.3.110
+
+[dbservers]
+10.0.3.30

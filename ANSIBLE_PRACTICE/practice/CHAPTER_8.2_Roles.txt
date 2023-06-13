@@ -1,0 +1,32 @@
+$cd /etc/ansible/roles
+$ll /etc/ansible/roles/php-webserver/
+list of folders created under this role
+$vim /etc/ansible/roles/php-webserver/tasks/main.yml
+---
+#tasks file for php-webserver
+- name: install php
+  yum: name={{ item }} state=latest
+  with_items:
+    - php
+    - php-gd
+    - php-pear
+    - php-mysql
+  notify: restart httpd
+
+====
+$vim /etc/ansible/roles/php-webserver/meta/main.yml
+dependencies:
+  - role: apache
+====
+$vi /etc/ansible/roles/install.yml
+---
+- hosts: local
+  become:yes
+  roles:
+    - php-webserver
+===
+$ansible-playbook install.yml
+
+
+
+

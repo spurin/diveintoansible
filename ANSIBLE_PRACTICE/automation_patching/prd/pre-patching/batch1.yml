@@ -1,0 +1,153 @@
+---
+##Take jenkins Input
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_prompt:
+    - name: jenkins_username
+      prompt: Enter jenkins user name
+      private: false
+      default: "oojha"
+    - name: jenkins_password
+      prompt: Enter jenkins password
+      private: yes
+
+  pre_tasks:
+    - fail:
+        msg: Missing Jenkins credentils.
+      when: jenkins_username == '' or jenkins_password == ''
+    - set_fact:
+        jenkins_username: "{{ jenkins_username }}"
+        cacheable: yes
+    - set_fact:
+        jenkins_username: "{{ jenkins_password }}"
+        cacheable: yes
+## Linux Pre-patching for Jira E3 servers ##
+- hosts: JiraComplete
+  serial: 1
+  gather_facts: false
+  ignore_errors: true
+  tag:
+    - jira
+
+  tasks:
+    - name: Validate Jira service
+      command: "{{ item }}"
+      with_items:
+          - uptime
+          - "{{ apache_stop }}"
+          - "{{ jira_stop }}"
+
+    - pause:
+        seconds: 15
+
+    - name: Get running jira running process
+      shell: "ps -ef | grep -v grep | grep -w jira | awk '{print $2}'"
+      register: jira
+
+    - name: Kill running jira process
+      shell: "kill -9 {{ item }}"
+      with_items: "{{ jira.stdout_lines }}"
+      register: jira_status
+      tags: jira
+
+    - debug:
+        var: jira_status
+
+## Linux Pre-patching for Confluence E3 servers ##
+- hosts: Confluence
+  serial: 1
+  gather_facts: false
+  ignore_errors: true
+  tag:
+    - confluence
+
+  tasks:
+    - name: Validate confluece service
+      command: "{{ item }}"
+      with_items:
+          - uptime
+          - "{{ apache_stop }}"
+          - "{{ confluence_stop }}"
+
+    - pause:
+        seconds: 10
+
+    - name: Get running confluence running process
+      shell: "ps -ef | grep -v grep | grep -w confluence | awk '{print $2}'"
+      register: confluence
+
+    - name: Kill running confluence process
+      shell: "kill -9 {{ item }}"
+      with_items: "{{ confluence.stdout_lines }}"
+      register: confluence_status
+      tags: confluence
+
+    - debug:
+        var: confluence_status
+
+## Linux Pre-patching for Bitbucket E3 servers ##
+- hosts: Bitbucket
+  serial: 1
+  gather_facts: false
+  ignore_errors: true
+  tag:
+    - stash
+
+  tasks:
+    - name: Stop apache and stash services on stash E3 servers
+      command: "{{ item }}"
+      with_items:
+          - uptime
+          - "{{ apache_stop }}"
+          - "{{ stash_stop }}"
+
+    - pause:
+        seconds: 15
+
+    - name: Get running stash running process
+      shell: "ps -ef | grep -v grep | grep -w stash_id | awk '{print $2}'"
+      register: stash
+
+    - name: Kill running stash process
+      shell: "kill -9 {{ item }}"
+      with_items: "{{ stash.stdout_lines }}"
+      register: stash_status
+      tags: stash
+
+    - debug:
+        var: stash_status
+
+## Linux Pre-patching for sonarqube E3 servers ##
+- hosts: Sonar
+  serial: 1
+  gather_facts: false
+  ignore_errors: true
+  tag:
+    - sonar
+
+  tasks:
+    - name: Stop sonar services
+      command: "{{ item }}"
+      with_items:
+          - uptime
+          - "{{ sonar_sonar_stop }}"
+
+    - pause:
+        seconds: 15
+
+    - name: Get running sonar running process
+      shell: "ps -ef | grep -v grep | grep -w sonar | awk '{print $2}'"
+      register: sonar
+
+    - name: Kill running sonar process
+      shell: "kill -9 {{ item }}"
+      with_items: "{{ sonar1.stdout_lines }}"
+      when: sonar1.stdout_lines != ''
+      
+    - debug:
+        msg: "Make sure to OFFLINE nodes in https://ci.abc.com/quality-scan/"
+      run_once: true
+
+
+        

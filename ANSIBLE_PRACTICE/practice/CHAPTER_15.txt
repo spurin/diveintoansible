@@ -1,0 +1,11 @@
+After certification.
+Go for new courses.
+
+Ansible and Amazon webservices
+Deploying AWS with Ansible and Terraform
+Using Ansible for Configuration Management and Deployments
+
+OpenStack
+OpenShift
+Redhat Virtualization
+ServerSecurity and Hardening

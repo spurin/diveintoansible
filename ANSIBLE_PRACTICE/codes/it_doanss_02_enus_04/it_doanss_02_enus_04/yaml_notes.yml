@@ -1,0 +1,34 @@
+---
+# unquoted scalars - a colon followed by a space or new line is not allowed
+drive: c:
+# no space or new line here so this is allowed
+path: c:\temp
+
+# quote (or double quote) hash values to preserve the colon
+drive: 'c:'
+
+# with double quotes you can use escape characters
+value: "a \n new line and a \t tab for example"
+
+# Ansible uses “{{ var }}” to denote variables so if you have a value after a
+# colon that starts with a “{”, YAML will interpret it as a dictionary, thus
+# you must quote it properly
+value: "{{ var }}"
+
+# if a value begins with a quote, then the entire value must be quoted
+value: "{{ variable }}/additional/string/literal"
+value: "{{ variable }}\\backslashes\\are\\special\\chars"
+
+# there are some reserved characters that can't be used as the first character
+# in an unquoted scalar
+# [] {} > | * & ! % # ` @ ,
+
+# for a literal boolean value (like yes or true) as a string use quotes
+not_boolean: "yes"
+string: "True"
+
+# YAML converts some strings into floating-point numbers so if you need to
+# specify something like a version number for example, use quotes if it appears
+# to be like a floating-point value
+ver: "2.0"
+...

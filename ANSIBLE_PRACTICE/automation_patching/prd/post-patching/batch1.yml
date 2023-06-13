@@ -1,0 +1,223 @@
+---
+##Take jenkins Input .... post-patching
+- hosts: localhost
+  connection: local
+  gather_facts: False
+  vars_prompt:
+    - name: jenkins_username
+      prompt: Enter jenkins user name
+      private: false
+      default: "oojha"
+    - name: jenkins_password
+      prompt: Enter jenkins password
+      private: yes
+
+  pre_tasks:
+    - fail:
+        msg: Missing Jenkins credentils.
+      when: jenkins_username == '' or jenkins_password == ''
+    - set_fact:
+        jenkins_username: "{{ jenkins_username }}"
+        cacheable: yes
+    - set_fact:
+        jenkins_username: "{{ jenkins_password }}"
+        cacheable: yes
+
+## Linux Post-patching for Jira E3 servers ##
+- hosts: Jira 
+  gather_facts: false
+  ignore_errors: true
+  tags:
+    - jiraPost 
+
+  tasks:
+    - name: Transfer Patching verification logic script
+      copy:
+        src: uptimeverification.sh
+        dest: /root/
+        mode: 0777
+      register: rc1
+
+    - name: Get patching status from jira Server
+      command: sh /root/uptimeverification.sh
+      when: rc1.failed == false
+      register: rc2
+      failed_when: "'FAILED' in rc2.stdout"
+    
+    - debug: 
+        var: rc2.stdout
+
+    - name: Get running jira process
+      shell: "ps -ef | grep -v grep | grep -w jira | awk '{print $2}'"
+      register: jira
+      ignore_errors: true
+
+    - name: Get running apache process
+      shell: "ps -ef | grep -v grep | grep -w httpd | awk '{print $2}'"
+      register: apache 
+      ignore_errors: true
+
+    - debug:
+        var: jira
+
+    - debug:
+        var: apache 
+
+    - name: Validate jira services on {{ inventory_hostname }}
+      command: "{{ item }}"
+      with_items:
+          - "{{ jira_start }}"
+      when: jira.stdout == ''
+      register: jira_status
+      ignore_errors: true
+
+    - debug:
+        var: jira_status
+
+## Linux Post-patching for Confluence E3 servers ##
+- hosts: Confluence 
+  gather_facts: false
+  ignore_errors: true
+  tags:
+    - ConfluencePost 
+
+  tasks:
+    - name: Transfer Patching verification logic script
+      copy:
+        src: uptimeverification.sh
+        dest: /root/
+        mode: 0777
+      register: rc1
+
+    - name: Get patching status from Confluence Server
+      command: sh /root/uptimeverification.sh
+      when: rc1.failed == false
+      register: rc2
+      failed_when: "'FAILED' in rc2.stdout"
+    
+    - debug: 
+        var: rc2.stdout
+
+    - name: Get running confluence process
+      shell: "ps -ef | grep -v grep | grep -w confluence | awk '{print $2}'"
+      register: confluence
+      ignore_errors: true
+
+    - name: Get running apache process
+      shell: "ps -ef | grep -v grep | grep -w httpd | awk '{print $2}'"
+      register: apache 
+      ignore_errors: true
+
+    - debug:
+        var: confluence
+
+    - debug:
+        var: apache 
+
+    - name: Validate confluence services on {{ inventory_hostname }}
+      command: "{{ item }}"
+      with_items:
+          - "{{ confluence_start }}"
+      when: confluence.stdout == ''
+      register: confluence_status
+      ignore_errors: true
+
+    - debug:
+        var: confluence_status
+
+## Linux post patching for Bitbucket E3 servers ##
+- hosts: Bitbucket
+  serial: 1
+  gather_facts: false
+  ignore_errors: true
+  tags:
+    - stashPost
+
+  tasks:
+    - name: Patching verification logic
+      copy:
+        src: uptimeverification.sh
+        dest: /root/
+        mode: 0777
+      register: rc1
+
+    - name: Get patching status from Stash Server
+      command: sh /root/uptimeverification.sh
+      when: rc1.failed == false
+      register: rc2
+      failed_when: "'FAILED' in rc2.stdout"
+    - debug: 
+        var: rc2.stdout
+
+    - name: Get running stash process
+      shell: "ps -ef | grep -v grep | grep -w stash_id | awk '{print $2}'"
+      register: stash
+      ignore_errors: true
+
+    - name: Get running apache process
+      shell: "ps -ef | grep -v grep | grep -w httpd | awk '{print $2}'"
+      register: apache 
+      ignore_errors: true
+
+    - debug:
+        var: stash
+
+    - debug:
+        var: apache 
+
+    - name: Validate apache and stash services on {{ inventory_hostname }}
+      command: "{{ item }}"
+      with_items:
+          - "{{ stash_start }}"
+      when: stash.stdout == ''
+      register: stash_status
+      ignore_errors: true
+
+    - debug:
+        var: stash_status
+
+## Linux Post-patching for sonarqube E3 servers ##
+
+- hosts: Sonar 
+  gather_facts: false
+  ignore_errors: true
+  tags:
+    - sonarPost 
+
+  tasks:
+    - name: Transfer Patching verification logic script
+      copy:
+        src: uptimeverification.sh
+        dest: /root/
+        mode: 0777
+      register: rc1
+
+    - name: Get patching status from Sonar Server
+      command: sh /root/uptimeverification.sh
+      when: rc1.failed == false
+      register: rc2
+      failed_when: "'FAILED' in rc2.stdout"
+    
+    - debug: 
+        var: rc2.stdout
+
+    - name: Validate apache and sonar service on {{ inventry_hostname }}
+      command: "{{ sonar_sonar_start }}"
+      register: sonar
+      ignore_errors: true
+    
+    - debug: 
+        var: sonar
+
+    - name: Validate apache service on {{ inventry_hostname }}
+      command: "{{ sonar_apache_start }}"
+      register: apa
+      ignore_errors: true
+    
+    - debug: 
+        var: apa
+
+    - debug:
+        msg: "Make sure to enable {{ inventoy_hostname }} from https://ci.abc.com/joc after post-patching"
+      run_once: true
+      

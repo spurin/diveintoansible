@@ -1,0 +1,17 @@
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+    - firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+    - Restart service firewalld
+      service:
+        name: firewalld
+        state: restarted
+        
+##elinks http://client1
+##elinks http://client2

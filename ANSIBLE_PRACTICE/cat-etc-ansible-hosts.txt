@@ -1,0 +1,6 @@
+ [remote]
+    abc1 ansbile_host=firstserver.mylab.com
+    abc2 ansible_host=secondserver.mylab.com
+    [centos]
+    localhost    
+    xyz1 ansible_host=firstserver.mylab.com

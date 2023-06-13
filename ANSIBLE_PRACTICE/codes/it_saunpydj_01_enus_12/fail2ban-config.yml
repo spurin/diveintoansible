@@ -1,0 +1,22 @@
+- hosts: all
+  remote_user: steve
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Install the fail2ban IPS
+      apt: name=fail2ban state=present
+
+    - name: Apply our configuration file
+      copy:
+        src: jail.local.j2
+        dest: /etc/fail2ban/jail.local
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Start fail2ban
+      systemd:
+        name: fail2ban
+        state: started
+        daemon_reload: yes
+

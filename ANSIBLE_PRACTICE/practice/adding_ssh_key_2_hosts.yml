@@ -1,0 +1,9 @@
+---
+-  name: Adding keys to remote hosts
+   hosts: ansible-nodes
+   tasks:
+   -  name: Install ssh key
+      authorized_key:
+        user: root
+        state: present
+        key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"

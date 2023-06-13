@@ -1,0 +1,45 @@
+##Linux Pre-patching for Crowd E3 server ##
+- hosts: Crowd
+  gather_facts: false
+  ignore_errors: true
+  
+  tasks:
+     - name: Patching verification logic
+       copy:
+         src: uptimeverification.sh
+         dest: /root/
+         mode: 0777
+       register: rc1
+
+     - name: Patching status for crowd servers
+       command: sh /root/uptimeverification.sh
+       when: rc1.failed == false
+       register: rc2
+       failed_when: "'FAILED' in rc2.stdout"
+
+     - debug:
+         var: rc2.stdout
+         
+     - name: Validation crowd server on {{ inventory_hostname }}
+       command: "{{ item }}" 
+       with_items: 
+           - "{{ crowd_start }}"
+       register: crowd_status
+
+     - name: sleep for 20 sec and continue with play
+       wait_for:
+           timeout: 20
+       delegate_to: localhost
+
+     - debug: 
+         var: crowd_status
+
+     - name: Restart Apache service on {{ inentory_hostname }}
+       command: "{{ item }}"
+       with_item: 
+           - "{{ apache_start }}"
+       register: apache_status
+
+     - debug:
+         var: apache_status
+         

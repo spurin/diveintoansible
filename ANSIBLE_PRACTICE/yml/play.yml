@@ -1,0 +1,14 @@
+--- #play example
+-  hosts: localhost
+    become: yes
+    tasks:
+      #prepare system for operations
+      - name: install cli web client
+          yum:
+            name: elinks
+            state: latest
+            
+#$ansible-playbook -i inv play.yml  [Executing play book and changes made]
+#$which elinks
+#$ansible-playbook -i inv play.yml -C  [ Executing playbook without changes... DRY RUN ]
+#$which elinks

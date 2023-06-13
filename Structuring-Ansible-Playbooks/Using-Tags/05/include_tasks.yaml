@@ -1,8 +1,0 @@
----
-# YAML documents begin with the document separator ---
-
-- debug:
-    msg: Include tasks executed
-
-# Three dots indicate the end of a YAML document
-...

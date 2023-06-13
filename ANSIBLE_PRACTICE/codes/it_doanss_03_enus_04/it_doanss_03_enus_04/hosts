@@ -1,0 +1,4 @@
+web1 ansible_host=10.0.3.3
+web2 ansible_host=10.0.3.73
+ntp1 ansible_host=10.0.3.73
+db1  ansible_host=10.0.3.30 

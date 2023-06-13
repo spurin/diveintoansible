@@ -1,0 +1,11 @@
+---
+# usage: ansible-playbook <filename> -u root [-i <inventory>]
+- name: ping specified hosts
+  gather_facts: False
+  # hosts: webservers:dbservers:&staging:!east
+  hosts: ~(web|db)servers
+
+  tasks:
+
+    - name: ping machines
+      ping:

@@ -1,0 +1,21 @@
+$ansible all -m setup
+Facts are gathered by default when a playbook is executed.
+$ansible scoldham2 -m setup -a "filter=*ipv4*"
+
+We can access collected facts by using varisbles:
+ {{ ansible_default_ipv4.address }}
+
+$ansible scoldham2 -m setup | less
+$ansible scoldham2 -m setup -a "filer=*ip*"
+$ansible scoldham2 -m setup -a "filer=*dist*"
+
+------- collect local facts -----------
+$ssh scoldham2 
+$sudo mkdir -p /etc/ansible/facts.d
+sudo vi /etc/ansible/facts.d/prefs.fact
+[location]
+type=physical
+dtacenter=Alexzandra
+$logout
+
+$ansible scoldham2 -m setup -a "filer=ansible_local"

@@ -1,0 +1,67 @@
+$ll /etc/ansible/roles/apache
+Number of directores created from galaxy command for apache
+
+====
+$vi /etc/ansible/roles/apache/tasks/main.yml
+#tasks file for apache.
+---
+- name: install apache
+  yum: name=httpd state=latest
+
+- name: copy httpd.conf template
+  template:
+    src: httpd.conf.j2
+    dest: /etc/httpd/conf/httpd.conf
+  notify: restart httpd
+  
+- name: enable and start service
+  service:
+    name: httpd
+    enabled: yes
+    state: started
+
+====
+$vi /etc/ansible/roles/apache/templates/httpd.conf.j2
+ServerAdmin {{ apache_server_admin }}
+
+====
+$vi /etc/ansible/roles/apache/defaults/main.yml
+#default file for apache
+apache_server_admin: admin@example.com
+
+====
+$vi /etc/ansible/roles/apache/handlers/main.yml
+#handlers file for apache
+- name: resart apache service
+  service: name=httpd state=restarted
+  listen: "restart httpd"
+
+====
+$vi /etc/ansible/roles/install.yml
+---
+- hosts: local
+  become: yes
+  roles:
+    - apache
+===
+$cd /etc/ansible/roles
+$ansible-playbook install.yml
+$grep ServerAdmin /etc/httpd/conf/httpd.conf
+ServerAdmin admin@example.com
+
+====
+$vi /etc/ansible/roles/install.yml
+---
+- hosts: local
+  become: yes
+  roles:
+    - apache
+  vars:
+    apache_server_admin: stosh@example.com
+
+====
+$ansible-playbook install.yml
+$grep ServerAdmin /etc/httpd/conf/httpd.conf
+ServerAdmin stosh@example.com 
+
+

@@ -1,0 +1,30 @@
+--- # tags example
+ - hosts: localhost
+     tasks: 
+        - name: Install elinks
+           become: yes
+           yum:
+               - name: elinks
+               - state: latest
+           tags:
+               - software
+        - name: Add line to text file
+           lineinfile:
+              path: /home/ansible/tag-test.txt
+              create: yes
+              line: "Tag called"
+           tags:
+               - files
+               - config
+          - name: Copy tag file
+             copy:
+                 src: /home/ansible/tag-test.txt
+                 dest: /tmp/copied.txt
+            tags:
+                config 
+
+
+#$ansible-playbook tags.yml 
+#$ansible-playbook tags.yml --tags software
+#$ansible-playbook tags.yml --tags software,files
+#$ansible-playbook tags.yml --skip-tags sofware,files

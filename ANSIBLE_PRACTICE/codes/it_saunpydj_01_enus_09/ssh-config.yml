@@ -1,0 +1,7 @@
+- hosts: all
+  tasks:
+    - name: create main user account
+      user: name=steve
+
+    - name: copy authorized public key
+      authorized_key: user=steve key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"

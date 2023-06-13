@@ -1,0 +1,12 @@
+--- # loop example1
+- hosts: localhost
+    become: yes
+    tasks:
+      - name: install software
+          yum:
+            name: "{{ item }}"
+            state: absent
+          loop:
+            - elinks
+            - nmap-ncat
+            - bind-utils

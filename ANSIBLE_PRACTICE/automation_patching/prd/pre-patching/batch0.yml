@@ -1,0 +1,16 @@
+##Linux Pre-patching for Crowd E3 server ##
+- hosts: Crowd
+  gather_facts: false
+  tasks:
+     - name: Stop apache & crowd servies on Crowd-E3
+       command: "{ item }"
+       with_items:
+            - uptime
+            - "{{ apache_stop }}"
+            - "{{ crowd_stop }}"
+     - name: Get running crowd process 
+       shell: "ps -ef | grep -v grep | grep -w crowd | awk '{print $2}'"
+       register: crowd
+     - name: Kill running crowd process 
+       shell: "kill -9 {{ item }}"
+       with_items: "{{ crowd.stdout_lines }}"

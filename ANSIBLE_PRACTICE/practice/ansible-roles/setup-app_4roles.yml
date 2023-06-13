@@ -1,0 +1,12 @@
+# setup-app.yml
+
+---
+ - hosts: webservers
+   become: true
+   roles:
+     - webservers
+
+ - hosts: loadbalancers
+   become: true
+   roles:
+     - loadbalancers

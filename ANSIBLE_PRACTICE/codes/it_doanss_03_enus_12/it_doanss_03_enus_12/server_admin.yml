@@ -1,0 +1,22 @@
+---
+# usage: ansible-playbook <filename> -u root [-i <inventory>]
+# The IP addresses of the nodes you wish to manage must either be in the default
+# /etc/ansible/hosts inventory file, or you can specify an alternative inventory
+# by issuing the -i flag with the path/name of the alternative inventory file.
+
+- name: playbook for maintaing webservers
+  hosts: webservers
+
+  tasks:
+    - name: restart the webservers
+      shell: sleep 2s && reboot & executable=/bin/bash
+
+    - name: Wait for server to come back up
+      wait_for_connection:
+        delay: 2
+        timeout: 10
+
+    - name: restart web service
+      service:
+        name: nginx
+        state: restarted

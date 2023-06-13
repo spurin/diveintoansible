@@ -1,0 +1,80 @@
+selinux - Configures the SELinux mode and policy.
+firewalld & iptables - Both manages firewall policies.
+pamd -Manges PAM modules
+
+https://docs.ansible.com/ansible/2.9/modules/list_of_all_modules.html
+$ansible all -a /usr/bin/uptime
+=========================
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+
+  - name: Enable SELinux
+    selinux:
+      policy: targeted
+      state: enforcing
+=========================
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+
+  - name: Install firewalld
+    action: yum name=firewalld state=installed
+  - name: Enable firewalld  on system reboot
+    service: name=firewalld enabled=yes
+  - name: Start Service firewalld, if not started
+    service:
+      name: firewalld
+      state: started
+=======================
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_fact: no
+  tasks:
+    - name: Ensure group 'developers' exists
+      group:
+        name: developers
+        state: present
+
+=============Add temp user ==========
+$sudo adduser tempuser
+$sudo grep tempuser /etc/shadow
+tempuser:$6$xxG60bDt$FjHsGO1zTCRRWrmewPBWt8VB0O9Wx9PJ6BnDOr8rvLRS/su.MtnOXoLtqUxuW3wGvc3UA0Kgnijmj.pOELjG11:18775:0:99999:7:::
+----
+Need get epochtimestamp and replace to make sure password expiry date/year.
+https://www.epochconverter.com/
+
+Epoch timestamp: 1640955661
+Timestamp in milliseconds: 1640955661000
+Date and time (GMT): Friday, December 31, 2021 1:01:01 PM
+Date and time (your time zone): Friday, December 31, 2021 6:01:01 AM GMT-07:00
+
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: Add a consultant whose account you want to expire
+      user:
+        name: james20
+        shell: /bin/bash
+        groups: developers
+        append: yes     //primary group will be developers
+        expires: 1640955661  //taken from www.epochconverter.com , this expiry date is from 'Friday, December 31, 2021 1:01:01 PM'
+        password: $6$xxG60bDt$FjHsGO1zTCRRWrmewPBWt8VB0O9Wx9PJ6BnDOr8rvLRS/su.MtnOXoLtqUxuW3wGvc3UA0Kgnijmj.pOELjG11   //taken encrypted password from linux machine
+
+#users will be created 'james20' with the same password what we used for tempuser. "ssh james20@client1"
+#If we want to delete the user.... simply add one line at the end of teh playbook and execute the playbook.
+#state: absent
+
+
+        

@@ -1,0 +1,23 @@
+---
+-  hosts: localhost
+     tasks:
+         - name: create working directory
+             file:
+               name: "{{ working_dir }}"
+               state: directory
+         -  name: write service list
+             lineinfile:
+               path: "{{ working_dir }}/services.txt"
+               create: yes
+               line: "{{ service_list }}"
+         - name: view share properties
+             command: ls -al "{{ share_paths['nfs'] }}"
+             register: cmd_output
+         - name: write command module output to a file
+             copy:
+               content: "{{ cmd_output }}"
+               dest: "{{ working_dir }}/cmd_output.txt"
+
+
+#$ansible-playbook vars_play.yml      [Getting several error]
+#$ansible-playbook vars_play.yml -e @vars.yml  [Passing vars.yml as set of variables ]

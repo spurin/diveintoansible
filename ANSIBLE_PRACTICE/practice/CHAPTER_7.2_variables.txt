@@ -1,0 +1,59 @@
+cat /home/user/vars/users.lst
+staff:
+  - joe
+  - john
+  - bob
+  - sam
+faculty:
+  - matt
+  - alex
+other:
+  - will
+  - jack
+
+----------------------
+cat /home/user/vars/usersList.yml
+
+---
+- hosts: local
+  vars:
+    userFile: /home/user/vars/list  //variable created
+  tasks:
+  - name: create a file
+    file:
+      state: touch
+      path: "{{ userFile }}"
+  - name: list users
+    lineinfile:
+      path: "{{ userFile }}"
+      line: "{{ item }}"  
+    with_items:
+      - "{{ staff }}"
+      - "{{ faculty }}"
+      - "{{ other }}"
+
+
+
+$ansible-playbook usersList.yml -e "@users.lst"  //users.lst file will are parsed as vairble inthe play book with this command.
+$cat /home/user/vars/list
+joe
+john
+bob
+sam
+matt
+alex
+will
+jack
+$cat /home/user/vars/users.lst
+staff:
+  - joe
+  - john
+  - bob
+  - sam
+faculty:
+  - matt
+  - alex
+other:
+  - will
+  - jack
+

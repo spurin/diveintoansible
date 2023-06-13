@@ -1,0 +1,18 @@
+---
+#play1
+   - hosts: ubuntu
+     become: True
+     become_user: onkar
+     gather_facts: True
+     tasks:
+     - name: creating file
+       file:
+        path: "/tmp/abc.txt"
+        state: touch
+   #  - command: touch /tmp/abc.txt
+   #  - copy: src=/tmp/abc.txt dest=/tmp/
+#play2
+#- hosts: ubuntu
+#  - tasks:
+#    - raw: test -e /usr/bin/python || ( apt-get update && apt-get install -y python )
+

@@ -1,0 +1,25 @@
+# inventory config file in YAML format
+plugin: constructed
+strict: False
+groups:
+    # basic name matching
+    webservers: inventory_hostname.startswith('web')
+    dbservers: inventory_hostname.startswith('db')
+    ntpservers: inventory_hostname.startswith('ntp')
+
+    # using ec2 'tags' presupposes AWS inventory
+    test: "'test' in (ec2_tags|list)"
+
+    # complex group membership
+    multi_group: (group_names|intersection(['alpha', 'beta']))|length >= 2
+
+keyed_groups:
+    # this creates a group per dist (dist_CentOS, dist_Debian) and assigns hosts
+    # with matching values using the default separator "_"
+    - prefix: dist
+      key: ansible_distribution
+
+    # this creates a group aligned with ec2 architecture then assigns hosts to
+    # those that have matching architectures (arch_x86_64, arch_sparc...)
+    - prefix: arch
+      key: ec2_architecture

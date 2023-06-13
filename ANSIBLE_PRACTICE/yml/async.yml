@@ -1,0 +1,7 @@
+--- #Async task example
+-  hosts: localhost
+     tasks:
+       - name: Run sleep.sh
+         command: /home/ansible/sleep.sh
+         async: 60   #Ansible allowing 60sec to execute above command else it will kill the session 
+         poll: 10      #Ansible polls the status at every 10sec

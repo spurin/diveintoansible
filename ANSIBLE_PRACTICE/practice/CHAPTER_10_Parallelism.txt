@@ -1,0 +1,36 @@
+It is possible to control the number of hosts acted upon at once time by Ansible
+Ansible process will create forks to execute actions in parallel.
+By default, the process will only for 5times. Default may be changed in ansible.cfg.
+
+Number of forks canbe set for single command using -f.
+
+===================
+---
+- hosts: labservers
+  become: yes
+  serial:
+    - 1
+    - 2
+    - 50%
+  tasks:
+    - name: add hosts entry
+      lineinfile:
+        path: /etc/hosts
+        line: "scoldham2 andible.mylabserver.com"
+
+$ansible-playbook serial.yml
+
+===================
+ ---
+- hosts: labservers
+  become: yes
+  serial:
+    - 1
+    - 2
+    - 50%
+  max_fail_percentage: 30   //allows you to cause a play to stop based on a certain(here 30%) failure threshold
+  tasks:
+    - name: add hosts entry
+      lineinfile:
+        path: /etc/hosts
+        line: "scoldham2 andible.mylabserver.com"

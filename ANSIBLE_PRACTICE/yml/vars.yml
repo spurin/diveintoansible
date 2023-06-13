@@ -1,0 +1,9 @@
+working_dir: /home/ansible/working
+service_list:
+-  htttpd
+-  nfs
+-  mariadb
+share_paths:
+  nfs:  /mnt/nfs
+  cifs:  /mnt/cifs
+  iscsi:  /mnt/iscsi

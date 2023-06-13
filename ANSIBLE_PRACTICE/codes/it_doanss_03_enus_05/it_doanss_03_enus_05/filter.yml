@@ -1,0 +1,27 @@
+---
+# usage: ansible-playbook <filename> -u root [-i <inventory>]
+- name: playbook demonstrating filters
+  gather_facts: False
+  hosts: 10.0.3.73
+  vars:
+    # used for filepaths on the server
+    website_name: 'mynginx'
+    # this variable is a boolean value
+    qa_passed: True
+
+  tasks:
+
+    - name: random mac addresses
+      debug: msg="{{ '40:2C:1A' | random_mac }}"
+
+    - name: url splitter getting hostname
+      debug: msg="{{ 'http://user:password@www.webapp.local:9000/dir/index.html?query=term#fragment' | urlsplit('hostname') }}"
+
+    - name: url splitter getting path
+      debug: msg="{{ 'http://user:password@www.webapp.local:9000/dir/index.html?query=term#fragment' | urlsplit('path') }}"
+
+    - name: debugging filters bool
+      debug: msg="{{ qa_passed | type_debug }}"
+
+    - name: debugging filters string
+      debug: msg="{{ website_name | type_debug }}"

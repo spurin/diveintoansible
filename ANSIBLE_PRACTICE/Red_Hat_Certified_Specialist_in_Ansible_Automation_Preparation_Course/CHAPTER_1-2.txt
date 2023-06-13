@@ -1,0 +1,61 @@
+Red Hat Certified Specialist in Ansible Automation (EX407) Preparation
+https://lucid.app/lucidchart/4b454bc1-80ea-4753-9457-7496a5bf661e/view?page=PmZBXAKWllr2#
+
+
+1) Install Ansible on the control node.
+sudo yum -y install ansible
+
+2) Configure the ansible user on the control node for ssh shared key access to managed nodes.
+Note: do not use a passphrase for the key pair.
+sudo su - ansible
+ssh-keygen
+
+3) Copy the public key to both node1 and node2.
+ssh-copy-id node1   // this command will put entry from [control node] ./ssh/id_rsa.pub) into node1 at (.ssh/authorized_keys) for ansible id since ansible id already created on node1 before. And also keeps entry of node1 detail at control node at [ /home/ansible/.ssh/known_hosts]
+ssh-copy-id node2   // this command will put entry from [control node] ./ssh/id_rsa.pub) into node2 at (.ssh/authorized_keys) for ansible id since ansible id already created on node1 before. And also keeps entry of node2 detail at control node at [ /home/ansible/.ssh/known_hosts]
+
+4) Validate from control node, if its allowing you to login without password on node1/2. 
+ssh node1 'hostname; df -h'
+ssh node2 'hostname; df -h'
+
+6) Create a sample Ansible inventory on the control node in /home/ansible/inventory containing node1 and node2.
+vi /home/ansible/inventory
+node1
+node2
+
+7) Configure sudo access for Ansible on node1 and node2, so that Ansible may use sudo for any command with no password prompt.
+ssh cloud_user@node1
+sudo visudo
+# %wheel        ALL=(ALL)       NOPASSWD: ALL
+ansible         ALL=(ALL)       NOPASSWD: ALL
+
+ssh cloud_user@node2
+sudo visudo
+# %wheel        ALL=(ALL)       NOPASSWD: ALL
+ansible         ALL=(ALL)       NOPASSWD: ALL
+
+8) Verify each managed node can be accessed by Ansible from the control node using the ping module. 
+Redirect the output of a successful command to /home/ansible/output.
+ansible -i inventory node1 -m ping
+ansible -i inventory node2 -m ping
+
+ansible -i inventory all -m ping > /home/ansible/output
+
+===================================================================================================
+Create the user accounts mentioned in /home/ansible/userlist.txt
+#ansible dbsystems -b -m user -a "name=consultant"
+#ansible dbsystems -b -m user -a "name=supervisor"
+
+Place Key Files in the correct location, /home/$USER/.ssh/authorized_keys, on Hosts in dbsystems
+
+#ansible dbsystems -b -m file -a "path=/home/consultant/.ssh state=directory owner=consultant group=consultant mode=0755"
+#ansible dbsystems -b -m copy -a "src=/home/ansible/keys/consultant/authorized_keys dest=/home/consultant/.ssh/authorized_keys mode=0600 owner=consultant group=consultant"
+
+#ansible dbsystems -b -m file -a "path=/home/supervisor/.ssh state=directory owner=supervisor group=supervisor mode=0755"
+#ansible dbsystems -b -m copy -a "src=/home/ansible/keys/supervisor/authorized_keys dest=/home/supervisor/.ssh/authorized_keys mode=0600 owner=supervisor group=supervisor"
+
+
+#ansible all -b -m service -a "name=nginx state=started enabled=yes"
+
+
+

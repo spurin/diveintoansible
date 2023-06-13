@@ -1,0 +1,13 @@
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: install elinks
+      action: yum name=elinks state=installed
+    - name: Install httpd
+      acton: yum name=httpd state=installed
+    - name: Enable & start Apache on system reboot
+      service: name=httpd enabled=yes state=started
+

@@ -1,0 +1,28 @@
+# setup-app.yml
+
+---
+  - hosts: webservers
+    become: true
+    tasks:
+      - name: Upload application file
+        copy:
+          src: ../index.php
+          dest: /var/www/html
+          mode: 0755
+
+      - name: Create simple info page
+        copy:
+          dest: /var/www/html/info.php
+          content: "<h1> Info about our webserver {{ ansible_hostname }} </h1>"
+
+      - name: Configure php.ini file
+        lineinfile:
+          path: /etc/php.ini
+          regexp: ^short_open_tag
+          line: 'short_open_tag=On'
+        notify: restart apache
+
+    handlers:
+      - name: restart apache
+        service: name=httpd state=restarted
+        

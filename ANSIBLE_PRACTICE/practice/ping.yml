@@ -1,0 +1,7 @@
+#ping.yml
+#ansible -m ping all
+---
+ - hosts: all
+   tasks:
+   - name: Pinging all servers
+     action: ping

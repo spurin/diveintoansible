@@ -1,0 +1,16 @@
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+   - name: Ensure a job that runs at 5am and 5pm exists. Creates an entry like "0 5,17 * * * df -h >> /tmp/diskspace"
+     cron:
+       name: "Job 0001"
+       minute: "0"
+       hour: "5,17"
+       job: "df -h >> /tmp/diskspace"
+
+##sudo crontab -l
+#Ansible: Job 0001
+#0 5,17 * * * df -h >> /tmp/diskspace

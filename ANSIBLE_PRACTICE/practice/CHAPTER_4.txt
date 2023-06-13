@@ -1,0 +1,145 @@
+Inventory file path: /home/user/ansible/inventory
+[dbservers]
+db1.example.com
+
+1) Which of the following files does Ansible check for variables related to that inventory? 
+Both:
+/home/user/ansible/host_vars/db1.example.com
+/home/user/ansible/group_vars/dbservers
+
+---------------LAB--------------------
+1) Login credentials are all on the lab overview page. Once we're logged into the control1 server, become the ansible user (su - ansible) 
+
+[ansible@control1]$touch /home/ansible/inventory
+$echo "[media]" >> /home/ansible/inventory
+$echo "media1" >> /home/ansible/inventory
+$echo "media2" >> /home/ansible/inventory
+
+2) Define Variables for media with Their Accompanying Values
+
+$mkdir /home/ansible/group_vars
+$touch /home/ansible/group_vars/media
+
+3) These will populate that new media file:
+$echo "media_content: /var/media/content/" >> /home/ansible/group_vars/media
+$echo "media_index: /opt/media/mediaIndex" >> /home/ansible/group_vars/media
+
+$cat /home/ansible/group_vars/media
+media_content: /var/media/content/
+media_index: /opt/media/mediaIndex
+
+4) Configure the Host Group webservers to Contain the Hosts web1 and web2
+
+$echo "[webservers]" >> /home/ansible/inventory
+$echo "web1" >> /home/ansible/inventory
+$echo "web2" >> /home/ansible/inventory
+
+$cat /home/ansible/inventory
+[media]
+media1
+media2
+
+[webservers]
+web1
+web2
+
+5) Define Variables for webservers with Their Accompanying Values
+
+$touch /home/ansible/group_vars/webservers
+$echo "httpd_webroot: /var/www/" >> /home/ansible/group_vars/webservers
+$echo "httpd_config: /etc/httpd/" >> /home/ansible/group_vars/webservers
+
+$cat /home/ansible/group_vars/webservers
+httpd_webroot: /var/www/
+httpd_config: /etc/httpd/
+
+6) Define the Variable script_files Specifically for web1, Setting Its Value to /usr/local/scripts
+
+$mkdir /home/ansible/host_vars
+$touch /home/ansible/host_vars/web1
+$echo "script_files: /usr/local/scripts" >> /home/ansible/host_vars/web1
+
+$cat /home/ansible/host_vars/web1
+script_files: /usr/local/scripts
+
+7) Testing to run the bakckup script to see if what we have done
+
+$ cd ~
+$ ./scripts/backup.sh
+
+------------------------------backup.sh--------------------------------
+#!/bin/sh
+
+# Need to take a tag varialbe
+# mediavars to test media
+# webservervars to test webservers
+# hostvar to test host var
+# use playbook tags maybe?
+
+case "$1" in
+  mediavars)
+    ansible-playbook -i /home/ansible/inventory /home/ansible/scripts/backup.yml --tags "mediavars"
+    exit $?
+    ;;
+  webservervars)
+    ansible-playbook -i /home/ansible/inventory /home/ansible/scripts/backup.yml --tags "webservervars"
+    exit $?
+    ;;
+  hostvar)
+    ansible-playbook -i /home/ansible/inventory /home/ansible/scripts/backup.yml --tags "hostvar"
+    exit $?
+    ;;
+  *)
+    ansible-playbook -i /home/ansible/inventory /home/ansible/scripts/backup.yml
+    exit $?
+esac
+
+--------------------------------backup.yml-------------------------------------
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: create backup directories
+      file:
+        path: /mnt/backup_vol/{{ ansible_hostname }}
+        state: directory
+      tags:
+        - hostvar
+        - webservervars
+        - mediavars
+- hosts: web1
+  become: yes
+  tasks:
+    - name: backup scripts
+      archive:
+        dest: /mnt/backup_vol/{{ ansible_hostname }}/scripts.tgz
+        path: "{{ script_files }}"
+      tags: hostvar
+
+- hosts: webservers
+  become: yes
+  tasks:
+    - name: backup httpd configs
+      archive:
+        dest: /mnt/backup_vol/{{ ansible_hostname }}/httpd_configs.tgz
+        path: "{{ httpd_config }}"
+      tags: webservervars
+    - name: backup webroot
+      archive:
+        dest: /mnt/backup_vol/{{ ansible_hostname }}/httpd_webroot.tgz
+        path: "{{ httpd_webroot }}"
+      tags: webservervars
+
+- hosts: media
+  become: yes
+  tasks:
+    - name: backup media content
+      archive:
+        dest: /mnt/backup_vol/{{ ansible_hostname }}/media_content.tgz
+        path: "{{ media_content }}"
+      tags: mediavars
+    - name: backup media index
+      archive:
+        dest: /mnt/backup_vol/{{ ansible_hostname }}/media_index.tgz
+        path: "{{ media_index }}"
+      tags: mediavars

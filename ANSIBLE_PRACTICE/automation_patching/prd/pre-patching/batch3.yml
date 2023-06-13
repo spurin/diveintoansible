@@ -1,0 +1,83 @@
+---
+- hosts: XLR Non-PaaS
+  serial: 1
+  gather_facts: false
+  ignore_errors: true
+  tags:
+    - xlrnonpass
+
+  tasks:
+     - name: Stop logstash service
+       service: 
+          name: logstash
+          state: stopped
+
+     - pause:
+          seconds: 5
+    
+     - name: Get running XLR process
+       shell: "{{ xlrp_status }}"
+       register: xlr_nonpass
+
+     - debug:
+         var: xlr_nonpass
+
+     - name: Kill running cdserver process
+       shell: "kill -9 {{ item }}"
+       with_items: "{{ xlr_nonpaas.stdout_lines }}"
+       register: log
+      
+     - debug:
+         var: log
+
+- hosts: XLR_PAAS
+  serial: 1
+  gather_facts: false
+  ignore_errors: true
+  tags:
+     - xlrpaas
+  tasks:
+     - name: Stop logstash SERVICE 
+       service: 
+          name: logstash
+          status: stopped
+     
+     - pause:
+         seconds: 10
+     
+     - name: Get running XLR service
+       shell: "{{ xlrp_status }}"
+       register: xlr_paas
+     
+     - debug:
+         var: xlr_paas
+      
+     - name: Kill running cdsever process 
+       shell: "kill -9 {{ item }}"
+       with_items: "{{ xlr_paas.stdout_lines }}"
+       register: log_status
+
+     - debug: 
+         var: log_status
+
+- hosts: XLR_API1
+  serial: 1
+  gather_facts: false
+  ignore_errors: true
+  tags:
+    - xlrapi
+  tasks:
+     - name: Get running XLR Java process
+       shell: "{{ java_api_status }}"
+       register: xlr_api
+
+     - debug:
+         var: xlr_api
+
+     - name: Kill running java process
+       shell: "kill -9 {{ item }}"
+       with_items: "{{ xlr_api.stdout_lines }}"
+       register: api
+
+     - debug:
+         var: api

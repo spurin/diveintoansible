@@ -1,0 +1,38 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  sudo: yes
+  tasks:
+    - name: apt-key add
+	  apt_key:
+	    url: "{{ item.url }}"
+		state: "{{ item.state }}"
+	  with_items:
+	    - { state: "present", url: "https://download.docker.com/linux/ubuntu/gpg" }
+	
+	- name: apt-add-repository
+	  apt_repository:
+	    repo: "{{ item.repo }}"
+		state: "{{ item.state }}"
+	  with_items:
+	    - { state: "absent", repo: "deb [arch=amd64] httpsa://download.docker.com/linux/ubuntu cosmic stable" }
+		- { state: "present", repo: "deb [arch=amd64] httpsa://download.docker.com/linux/ubuntu disco test" }
+		
+	- name: apt install
+	  apt:
+	    name: "{{ item.name }}"
+		state: "{{ item.state }}"
+	  with_items:
+	    - { state: "absent", name: "docker" }
+		- { state: "absent", name: "docker-engine" }
+		- { state: "absent", name: "docker.io" }
+		- { state: "latest", name: "docker-ce" }
+	
+	- name: enable service
+	  service:
+	    name: "{{ item_name }}"
+		state: "{{ item.state }}"
+		enabled: "{{ item.enabled }}"
+	  with_items:
+	    - { name: "docker", state: "started", enabled: "yes" }
+        

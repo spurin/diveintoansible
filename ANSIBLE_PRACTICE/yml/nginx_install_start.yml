@@ -1,0 +1,14 @@
+---
+
+- hosts : test-centos
+
+  tasks : 
+   - name : install nginx
+     yum  : pkg=nginx state=installed
+
+     notify :
+      - start nginx
+
+  handlers :
+   - name : start nginx
+     service : name=nginx state=started

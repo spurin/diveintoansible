@@ -1,0 +1,18 @@
+--- # Error handing using block
+-  hosts: localhost
+     become: yes
+     vars:
+       target_service: httpd
+     tasks:
+       - name: Install software
+           block:
+             - service: 
+                 name: "{{ target service }}"
+                 state: started
+                 register: service_status
+           rescue:
+             - debug:
+                 var: service_status
+           always:
+             - debug:
+                 msg: "Tried to ensure services was running"

@@ -1,0 +1,41 @@
+# setup-app.yml
+
+---
+  - hosts: webservers
+    become: true
+
+    vars:
+      path_to_app: "/var/www/html"
+
+    vars_files:
+      - ../vars/secret-varibles.yml # vault password is 'password'
+ 
+    tasks:
+      - name: Use secret password here
+        debug:
+          msg: "{{ secret_password }}"
+          
+      - name: Upload application file
+        copy:
+          src: ../index.php
+          dest: "{{ path_to_app }}"
+          mode: 0755
+        tags: upload
+
+      - name: Create simple info page
+        copy:
+          dest: "{{ path_to_app }}/info.php"
+          content: "<h1> Info about our webserver {{ ansible_hostname }}. These are changes. </h1>"
+        tags: create
+
+      - name: Configure php.ini file
+        lineinfile:
+          path: /etc/php.ini
+          regexp: ^short_open_tag
+          line: 'short_open_tag=On'
+        notify: restart apache
+
+    handlers:
+      - name: restart apache
+        service: name=httpd state=restarted
+        

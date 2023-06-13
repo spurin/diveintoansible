@@ -1,0 +1,5 @@
+---
+
+- import_playbook: docker_install.yaml
+- import_playbook: git_install.yaml
+- import_playbook: apache2_install.yaml

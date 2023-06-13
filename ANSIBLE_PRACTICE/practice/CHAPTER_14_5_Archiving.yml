@@ -1,0 +1,25 @@
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: Compress directory /var/log/ into /home/ansible/logs.zip
+      archive:
+        path: /var/log
+        dest: /home/ansible/logs.tar.gz
+        owner: ansible
+        group: ansible
+        format: gz
+
+    - name: Fetch thelog files to the local filesystem
+      fetch:
+        src: /home/ansible/logs.tar.gz
+        dest: logbackup-{{ inventory_hostname }}.tar.gz  //if zip was present will take backup for that.
+        flat: yes
+
+
+##ssh client1
+##ll /home/ansible/
+logs.tar.gz        
+

@@ -1,0 +1,84 @@
+-------handle.yaml
+---
+- hosts: scoldham2
+  become: yes
+  handlers:
+    - name: restart apache
+      service: name="httpd" state="restarted"
+      listen: "restart web"
+  tasks:
+    - name: change config
+      replace:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^DocumentRoot.*$'
+        replace: 'DocumentRoot "/opt/www"'
+        backup: yes
+      notify: "restart web"  
+
+
+$ansible-playbook ansibe/handle.yaml
+$ssh scoldham2
+$ls -ltr /etc/httpd/conf/
+$diff /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.2343.2021-05-07
+
+------creating user with varible-------------------
+---
+- hosts: local
+  become: yes
+  tasks:
+    - name: create user
+      user:
+        name: "{{item}}"
+      with_item:
+        - sam
+        - bob
+
+------When condition ----------
+---
+- hosts: labservers
+  become: yes
+  tasks:
+    - name: edit index
+      lineinfile:
+        path: /var/www/html/index.html
+        line: "I'm back"
+      when:
+        - ansible_hostname == "scoldham3"
+$curl scoldham3/index.html  ## we found he changes
+$curl scoldham2/index.html  ## we did not find the change since 'when' condition did not match
+
+-----------ERROR HANDLING- ignore----------------
+---
+- hosts: local
+  tasks: 
+    - name: Get files
+      get_url:
+        url: "http://{{item}}/index.html"
+        dest: "/tmp/{{item}}"
+      ignore_errors: yes
+      with_item:
+        - scholdham2
+        - scholdham3
+        - scholdham4
+
+-----------ERROR HANDLING - Blocks --------------
+Its like try - catch. block and rescue.
+---
+- hosts: local
+  tasks:
+    - name: Get file
+*     block:
+*       - get_url:
+            url: "http://scoldham6/index.html"
+            dest: "/tmp/index_file"
+      rescue:
+        - debug: msg="The file doesn;t exit"
+      always:
+        - debug: msg="Play done!"
+
+$ansible_playbook block.yml
+$curl scoldham6/index.html
+$ansible scoldham6 -b -m service -a "name=httpd state=stopped"
+$rm -rf /tmp/index_file
+$ansible_playbook block.yml
+$curl scoldham6/index.html

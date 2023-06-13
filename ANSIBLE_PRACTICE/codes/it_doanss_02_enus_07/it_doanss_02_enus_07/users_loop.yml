@@ -1,0 +1,14 @@
+---
+# usage: ansible-playbook <filename> -u root -i <inventory>
+- name: add some users to a machine
+  hosts: webservers
+  tasks:
+    - name: add users
+      user:
+        name: "{{ item }}"
+        state: present
+        groups: "staff"
+      loop:
+        - testuser1
+        - testuser2
+        - testuser3

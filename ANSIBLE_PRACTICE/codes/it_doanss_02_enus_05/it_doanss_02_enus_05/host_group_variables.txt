@@ -1,0 +1,49 @@
+# You can assign variables to hosts in inventory
+[west]
+host1 http_port=8080
+host2 http_port=3000
+
+# You can assign variables to a group of hosts.
+[west]
+host1
+host2
+
+[west:vars]
+proxy=proxy.west.local
+
+# ...and the same in yaml syntax
+west:
+  hosts:
+    host1:
+    host2:
+  vars:
+    proxy.west.local
+
+# Variables are merged or flattened by default to the specific host before a
+# play is run and Ansible overwrites variables by default, including those that
+# are defined for groups/hosts. Order of precedence from lowest to highest is:
+all group (since it is parent to all other groups)
+parent group
+child group
+host
+
+# Groups at the same level are merged alphabetically, with the last group merged
+# overwriting previous groups. Thus, an x_group will be merged with a y_group
+# and y_group variables that match will overwrite the ones in the x_group. Here,
+# the result of the merge is that myvar == y.
+x_group:
+    myvar: x
+y_group：
+    myvar: y
+
+
+# Since Ansible version 2.4, you can use the ansible_group_priority groups
+# variable to change the merge order for groups of the same level. The larger
+# the prority number, the later it is merged, thereby providing it with a higher
+# priority. The default for the variable is 1 if not explicitly set. Here, the
+# result of the merge is that myvar == x.
+x_group:
+    myvar: x
+    ansible_group_priority: 5
+y_group：
+    myvar: y

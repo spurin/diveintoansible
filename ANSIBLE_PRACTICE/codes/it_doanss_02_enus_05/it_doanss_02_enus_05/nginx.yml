@@ -1,0 +1,38 @@
+---
+# usage: ansible-playbook <filename> -u root
+
+- hosts: webservers
+  vars:
+    # used for filepaths on the server
+    website_name: "mynginx"
+    # this variable is referenced in index.html
+    website_title: "Success!"
+    # this variable is referenced in website conf file
+    website_url: "www.mynginx.local"
+
+  tasks:
+    - name: install nginx package on server
+      package: name=nginx state=latest
+
+    - name: create a website directory
+      file: path="/var/www/html/{{ website_name }}" state=directory mode=0755
+
+    - name: copy the nginx vhost conf file up to the server
+      template:
+        src: "templates/website.conf"
+        dest: "/etc/nginx/conf.d/{{ website_name }}.conf"
+      notify:
+      - restart nginx
+
+    - name: copy the website template to the server
+      template:
+        src: "templates/index.html"
+        dest: "/var/www/html/{{ website_name }}/index.html"
+      notify:
+      - restart nginx
+
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted

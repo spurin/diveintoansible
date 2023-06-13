@@ -1,0 +1,35 @@
+cat /home/user/template/network.j2   //creating template file named as netwrok.j2
+{{ ansible_default_ipv4.address }}
+
+
+--------deplyTemplate.yml ---------------
+---
+- hosts:
+  tasks:
+  - name: deploy local net file
+    template:
+      src: /home/user/template/network.j2
+      dest: /home/user/template/network.txt
+
+$ansible-playbook deployTemplate.yml
+$cat /home/user/template/network.txt
+192.168.56.10
+
+=============================
+cat /home/user/template/network.j2   //creating template file named as netwrok.j2
+My IP address is {{ ansible_default_ipv4.address }}
+{{ ansible_distribustion }} is my OS version.
+
+--------deplyTemplate.yml ---------------
+---
+- hosts:
+  tasks:
+  - name: deploy local net file
+    template:
+      src: /home/user/template/network.j2
+      dest: /home/user/template/network.txt
+
+$ansible-playbook deployTemplate.yml
+$cat /home/user/template/network.txt
+My IP address is 192.168.56.10
+RedHat is my OS version.

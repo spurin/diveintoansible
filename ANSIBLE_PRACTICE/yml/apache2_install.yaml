@@ -1,0 +1,43 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  sudo: yes
+  tasks:
+    - name: apt-add-repository
+	  apt_repository:
+	    repo: "{{ item.repo }}"
+		state: "{{ item.state }}"
+	  with_items:
+	    - { state: "present", repo: "ppa:ondrej/apache2" }
+	
+	- name: apt install
+	  apt:
+	    name: "{{ item.name }}"
+		state: "{{ item.state }}"
+	  with_items:
+	    - { state: "absent", name: "apache2-mpm-itk" }
+		- { state: "absent", name: "apache2-mpm-prefork" }
+		- { state: "latest", name: "apache2" }
+		- { state: "latest", name: "apache2-bin" }
+		- { state: "latest", name: "apache2-date" }
+		- { state: "latest", name: "apache2-doc" }
+		- { state: "latest", name: "apache2-utils" }
+		
+	- name: a2enmod
+	  apache2_module:
+	    name: "{{ item.name }}"
+		state: "{{ item.state }}"
+	  with_items:
+	    - { state: "absent", name: "mpm_prefork" }
+		- { state: "absent", name: "mpm_worker" }
+		- { state: "present", name: "alias" }
+		- { state: "present", name: "auth_basic" }
+		- { state: "present", name: "authn_file" }
+	
+	- name: enable service
+	  service:
+	    name: "{{ item_name }}"
+		state: "{{ item.state }}"
+		enabled: "{{ item.enabled }}"
+	  with_items:
+	    - { state: "started", name: "apache2", enabled: "no" }

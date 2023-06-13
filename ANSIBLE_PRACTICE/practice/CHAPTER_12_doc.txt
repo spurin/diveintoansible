@@ -1,0 +1,8 @@
+$ansible-doc lineinfile  //It will show you ansible documents for lineinfile.
+
+$ansible-doc replace  //It has all details for replace module
+$ansible-doc htpasswd  //Detail about that module
+$ansible-doc -s htpasswd // More consolidated/short details not much details
+
+http://ansible.com/ansible/latest/index.html
+https://lucid.app/lucidchart/4b454bc1-80ea-4753-9457-7496a5bf661e/view?page=PmZBXAKWllr2#

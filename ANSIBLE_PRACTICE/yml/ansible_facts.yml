@@ -1,0 +1,15 @@
+--- #ansible facts example
+-  hosts: remote
+     tasks:
+       - name: create a file
+           lineinfile:
+             path: /home/ansible/hostname
+             create: yes
+             line: "{{ ansible_hostname }}"
+       - name: access magic variables
+           lineinfile:
+             path: /home/ansible/hostname
+             line: "{{ hostvars['localhost']['ansible_default_ipv4']['address'] }}"
+#$cat /etc/ansible/ansible.cfg  [ check for fact_caching]
+##fact_caching=jsonfile   [if hosts have 100file then you may get space issues due to logs collection on jsonfile ]
+#$ansible -i inv all -m setup   [to update fact cache] 

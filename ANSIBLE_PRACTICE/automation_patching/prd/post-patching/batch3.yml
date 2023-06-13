@@ -1,0 +1,115 @@
+---
+- hosts: XLR_Non_PaaS
+  gather_facts: false 
+  tags: 
+    - xlrnonpaaspost
+  tasks:
+     - name: Transfer Patching Verification login script 
+       copy:
+         src: uptimeverification.sh
+         dest: /root/
+         mode: 0777
+       register: rc1
+
+     - name: Get Patcvhing status for {{ inventory_hostname }}
+       command: sh /root/uptimeverification.sh
+       when: rc1.failed == false 
+       register: rc2
+       failed_when: "'FAILED' in rc2.stdout"
+
+     - debug:
+         var: rc2.stdout
+
+     - name: Transfer script to start cdserver 
+       copy:
+         src: cdserver.sh
+         dest: /root/
+         mode: 0777
+       register: rc3
+     
+     - name: Verify process on {{ inventory_hostname }}
+       shell: "{{ xlrp_status }}"
+       register: cdser
+       ignore_errors: true
+
+     - debug:
+         msg: "XLR process before: {{ cdser.stdout }}"
+    
+     - name: Start XLR process on {{ inventory_hostname }}
+       shell: sh /root/cdserver.sh
+       register: xlrstart
+       when: cdser.stdout == ''
+       ignore_errors: true
+
+     - debug:
+         var: xlrstart
+     - pause: 
+         seconds: 5
+
+     - name: Verify process on {{ inventory_hostname }}
+       shell: "{{ xlrp_status }}"
+       register: cd
+       ignore_errors: true
+
+     - debug:
+         msg: "XLR process after: {{ cd.stdout }}"
+
+
+- hosts: XLR_PaaS
+  gather_facts: false 
+  tags: 
+    - xlrpaaspost
+  tasks:
+     - name: Transfer Patching Verification login script 
+       copy:
+         src: uptimeverification.sh
+         dest: /root/
+         mode: 0777
+       register: rc1
+
+     - name: Get Patcvhing status for {{ inventory_hostname }}
+       command: sh /root/uptimeverification.sh
+       when: rc1.failed == false 
+       register: rc2
+       failed_when: "'FAILED' in rc2.stdout"
+
+     - debug:
+         var: rc2.stdout
+
+     - name: Transfer script to start cdserver 
+       copy:
+         src: cdserver.sh
+         dest: /root/
+         mode: 0777
+       register: rc3
+     
+     - debug:
+         var: rc3 
+     
+     - name: Verify process on {{ inventory_hostname }}
+       shell: "{{ xlrp_status }}"
+       register: cdser
+       ignore_errors: true
+
+     - debug:
+         msg: "XLR process before: {{ cdser.stdout }}"
+    
+     - name: Start XLR process on {{ inventory_hostname }}
+       shell: sh /root/cdserver.sh
+       register: xlrstart
+       when: cdser.stdout == ''
+       ignore_errors: true
+
+     - debug:
+         var: xlrstart
+     - pause: 
+         seconds: 5
+
+     - name: Verify process on {{ inventory_hostname }}
+       shell: "{{ xlrp_status }}"
+       register: cdser1
+       ignore_errors: true
+
+     - debug:
+         msg: "XLR process after: {{ cdser1.stdout }}"
+

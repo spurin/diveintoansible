@@ -1,0 +1,49 @@
+- hosts: all
+  remote_user: steve
+  become: yes
+  become_method: sudo
+  tasks:
+  - name: Firewall - flush
+    iptables:
+      flush: true
+
+  - name: Firewall - LOOPBACK
+    iptables:
+      action: append
+      chain: INPUT
+      in_interface: lo
+      jump: ACCEPT
+
+  - name: Firewall - ICMP (ping)
+    iptables:
+      chain: INPUT
+      jump: ACCEPT
+      protocol: icmp
+
+  - name: Firewall - SSH
+    iptables:
+      chain: INPUT
+      destination_port: 22
+      jump: ACCEPT
+      protocol: tcp
+    
+  - name: Firewall - HTTP
+    iptables:
+      chain: INPUT
+      destination_port: 80
+      jump: ACCEPT
+      protocol: tcp
+
+  - name: Firewall - HTTPS
+    iptables:
+      chain: INPUT
+      destination_port: 443
+      jump: ACCEPT
+      protocol: tcp
+
+  - name: Firewall - DROP
+    iptables:
+      chain: INPUT
+      jump: DROP
+
+

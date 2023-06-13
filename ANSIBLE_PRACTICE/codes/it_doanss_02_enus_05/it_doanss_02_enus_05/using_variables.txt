@@ -1,0 +1,4 @@
+# Variables can be referenced in playbooks using the Jinja2 templating system.
+# For example, this provides a basic form of variable substitution and is also
+# valid as is, directly within playbooks:
+{{ my_var }}

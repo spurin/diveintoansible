@@ -1,0 +1,16 @@
+- hosts: inv
+  remote_user: steve
+  become: yes
+  become_method: sudo
+
+  tasks:
+    - name: Install latest git
+      apt: name=git state=latest
+
+    - name: Install latest nginx
+      apt: name=nginx state=latest
+
+    - service:
+        name: nginx
+        state: started
+

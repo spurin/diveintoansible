@@ -1,0 +1,85 @@
+---
+- hosts: webservers
+  remote_user: root
+
+  tasks:
+  - name: ensure apache is at the latest version
+    yum: name=httpd state=latest
+  - name: write the apache config file
+    template: src=/srv/http.j2 dest=/etc/httpd.conf
+
+- hosts: databases
+  remote_user: root
+
+  tasks:
+  - name: ensure postgress is at the latest version
+    yum: name=postgresql state=latest
+  - name: ensure that postgresql is started
+    service: name=postgresql state=started
+
+========================demo.yaml===============================
+---
+- hosts: labservers
+  become: yes  ### like -b in adhoc command, you much have sudo allowed so that it will execute
+  tasks:
+    - name: install apache
+      yum:
+        name: httpd
+        state: latest
+
+    - name: start and enable httpd
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: create index.html file
+      file:
+        path: /var/www/html/index.html
+        state: touch
+
+    - name: add a line to index.html
+      lineinfile:
+        path: /var/www/html/index.html
+        line: "Hello world"
+
+ 
+$ssh lab1
+$sudo yum list httpd
+$cat /etc/ansible/hosts
+$ansible-playbook demo.yaml
+$ssh lab1
+$sudo yum list httpd
+going to 2nd task from the yaml.
+$ansible-playbook demo.yaml
+$ansible-playbook demo.yaml --limit lab12.mylabs.com  ## only runs on lab12.mylabs.com server.
+$curl lab12/index.html
+$curl lab13/index.html ##file should not exist on lab13 server.
+$ansible-playbook demo.yaml   ## It will run on all hosts
+$curl lab13/index.html  ## we should see the index file on lab13 server too now.
+
+
+==========LAB1=========
+1) You must create an ansible inventory in /home/ansible/inventory containing a host group named web. The web group should contain node1 and node2.
+
+[ansible@control1 ~]$ cat /home/ansible/inventory
+[web]
+node1
+node2
+
+2) Furthermore, you must design an Ansible playbook that will execute the following tasks on your configured inventory: install httpd, start and enable the httpd service, and install a simple website provided on a repo server. 
+Create the playbook in /home/ansible/web.yml. The simple website may be accessed from http://repo.example.com/website.tgz.
+
+---
+- hosts: web
+  become: yes
+  tasks:
+    - name: Install httpd
+      yum: name=httpd state=latest
+    - name: Start httpd service
+      service: name=httpd state=started enabled=yes
+    - name: retrieve website from repo
+      get_url: url=http://repo.example.com/website.tgz dest=/tmp/website.tgz
+    - name: install website
+      unarchive: remote_src=yes src=/tmp/website.tgz dest=/var/www/html/
+

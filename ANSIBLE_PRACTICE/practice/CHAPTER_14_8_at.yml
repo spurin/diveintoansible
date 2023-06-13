@@ -1,0 +1,21 @@
+#at - Execute commands at a specific time. It will used to schedule jobs that will be running once in the future. It is used for single ad-hoc jobs and is not meant as a replacement for cron.
+#atq - Lists the users pending jobs.
+#atrm -  Deletes a job by its job number.
+#batch -  execute the command depedning on specific system loda levels. A value must be specified. Only 'at' and 'atrm' are controled via the 'at' module.
+
+#------------
+---
+- hosts: all
+  user: ansible
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: install the at command for job scheduling
+      action: yum name=at state=installed
+    - name: Enable and start service at if not started
+      service:
+        name: atd
+        enabled: yes
+        state: started
+
+##ansible-playbook install-at.yml

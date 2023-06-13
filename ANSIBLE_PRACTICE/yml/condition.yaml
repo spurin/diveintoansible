@@ -1,0 +1,12 @@
+--- #ansible condition example
+-  hosts: remote
+     vars:
+       target_file: /hme/ansible/hostname
+     tasks:
+       - name: Gather file information
+           stat:
+             path: "{{ target_file }}"
+           register: hostname
+       - name: rename hostname when found
+           command: mv "{{ target_file }}" /home/ansible/net-info
+           when: hostname.stat.exists

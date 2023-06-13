@@ -1,0 +1,42 @@
+cat /home/user/vars/var.yml
+---
+- hosts: local
+  vars:
+    inv_file: /home/user/vars/inv.txt  //variable created
+  tasks:
+  - name: create a file
+    file:
+      path: "{{inv_file}}"
+      state: touch
+  - name: generate inventory
+    lineinfile:
+      path: "{{inv_file}}"
+      line: "{{ groups['labservers'] }}"  //using magic variable 'groups'
+
+
+$ansible-playbook var.yml
+$cat inv.txt
+['scoldham2', 'scoldham3', 'scoldham4']
+$
+
+------lets use filter-----
+cat /home/user/vars/var.yml
+---
+- hosts: local
+  vars:
+    inv_file: /home/user/vars/inv.txt  //variable created
+  tasks:
+  - name: create a file
+    file:
+      path: "{{inv_file}}"
+      state: touch
+  - name: generate inventory
+    lineinfile:
+      path: "{{inv_file}}"
+      line: "{{ groups['labservers'] | join(' ') }}"  //using join with magic variable 'groups'
+
+$ansible-playbook var.yml
+$cat inv.txt
+['scoldham2', 'scoldham3', 'scoldham4']
+scoldham2 scoldham3 scoldham4
+$

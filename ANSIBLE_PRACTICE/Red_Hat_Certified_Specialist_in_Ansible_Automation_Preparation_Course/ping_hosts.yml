@@ -1,0 +1,18 @@
+#ping.yml
+#ansible -m ping all
+---
+ - hosts: all
+   vars:
+     my_region: us-east-1a
+   module_defaults:
+     ec2:
+       region: '{{ my_region }}'
+     ec2_instance_info:
+       region: '{{ my_region }}'
+     ec2_vpc_net_info: 
+       region: '{{ my_region }}'
+
+   tasks:
+   - name: Pinging all servers
+     action: ping
+

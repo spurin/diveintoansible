@@ -1,0 +1,111 @@
+Parameters:
+  NameOfService:
+    Description: The tag name associated with this EC2 instances.
+    Type: String
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access into the server
+    Type: AWS::EC2::KeyPair::KeyName
+Mappings:
+  RegionMap:
+    us-east-1:
+      AMI: ami-0ff8a91507f77f867
+    us-east-2:
+      AMI: ami-02e680c4540db351e
+    us-west-2:
+      AMI: ami-a0cfeed8
+Resources:
+  LnEc2InstanceWebServer1:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId:
+        Fn::FindInMap:
+        - RegionMap
+        - !Ref AWS::Region
+        - AMI
+      Tags:
+        - Key: Name
+          Value: !Join [ '-', [ !Ref NameOfService, 'webserver' ,'1'] ]
+      SecurityGroups:
+        - !Ref LnSecurityGroup
+      KeyName: !Ref KeyName
+  LnEc2InstanceWebServer2:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId:
+        Fn::FindInMap:
+        - RegionMap
+        - !Ref AWS::Region
+        - AMI
+      Tags:
+        - Key: Name
+          Value: !Join [ '-', [ !Ref NameOfService, 'webserver' ,'2'] ]
+      SecurityGroups:
+        - !Ref LnSecurityGroup
+      KeyName: !Ref KeyName
+  LnEc2InstanceLoadBalancer:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId:
+        Fn::FindInMap:
+        - RegionMap
+        - !Ref AWS::Region
+        - AMI
+      Tags:
+        - Key: Name
+          Value: !Join [ '-', [ !Ref NameOfService, 'load-balancer'] ]
+      SecurityGroups:
+        - !Ref LnSecurityGroup
+      KeyName: !Ref KeyName
+  LnSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH to client host. Created using CloudFormation template.
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: acg-ansible-course-sg
+        - Key: Description
+          Value: Security Group created for SSH and HTTP access to instances.
+  LnElasticIp1:
+    Type: AWS::EC2::EIP
+    Properties:
+      InstanceId: !Ref LnEc2InstanceWebServer1
+  LnElasticIp2:
+    Type: AWS::EC2::EIP
+    Properties:
+      InstanceId: !Ref LnEc2InstanceWebServer2
+  LnElasticIp3:
+    Type: AWS::EC2::EIP
+    Properties:
+      InstanceId: !Ref LnEc2InstanceLoadBalancer
+Outputs:
+  LnPublicIpAddressInstance1:
+    Description: The Public IP address for EC2 instances
+    Value: !GetAtt
+      - LnEc2InstanceWebServer1
+      - PublicIp
+  LnPublicIpAddressInstance2:
+    Description: The Public IP address for EC2 instances
+    Value: !GetAtt
+      - LnEc2InstanceWebServer2
+      - PublicIp
+  LnPublicIpAddressLoadBalancer:
+    Description: The Public IP address for EC2 instances
+    Value: !GetAtt
+      - LnEc2InstanceLoadBalancer
+      - PublicIp
+  WebsiteLink:
+    Description: The Public DNS for the EC2 Instance
+    Value: !Sub 'http://${LnEc2InstanceLoadBalancer.PublicDnsName}'
+

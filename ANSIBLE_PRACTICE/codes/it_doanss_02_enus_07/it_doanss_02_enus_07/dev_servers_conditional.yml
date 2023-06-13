@@ -1,0 +1,16 @@
+---
+# usage: ansible-playbook <filename> -u root -i <inventory>
+- name: install python development package on Debian and CentOS hosts
+  hosts: devservers
+  gather_facts: true
+  tasks:
+    - name: install Python devel on Debian based systems
+      debug: var=ansible_facts
+      # apt:
+      #   name: python-dev
+      when: ansible_facts['distribution'] == "Ubuntu"
+    - name: install python devel on CentOS based systems
+      debug: var=ansible_facts
+      # yum:
+      #   name: python-devel
+      when: ansible_facts['distribution'] == "CentOS"

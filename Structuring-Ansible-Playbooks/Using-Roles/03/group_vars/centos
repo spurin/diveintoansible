@@ -1,4 +1,0 @@
----
-ansible_user: root
-nginx_root_location: /usr/share/nginx/html
-...

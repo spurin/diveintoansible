@@ -1,0 +1,72 @@
+1) You must create the user accounts noted in /home/ansible/userlist.txt and set up the provided public keys for their accounts. 
+consultant
+supervisor
+
+sudo su - ansible
+ansible dbsystems -b -m user -a "name=consultant"
+ansible dbsystems -b -m user -a "name=supervisor"
+
+2)Place Key Files in the Correct Location
+
+ansible dbsystems -b -m file -a "path=/home/consultant/.ssh state=directory owner=consultant group=consultant mode=0755"
+ansible dbsystems -b -m copy -a "src=/home/ansible/keys/consultant/authorized_keys dest=/home/consultant/.ssh/authorized_keys mode=0600 owner=consultant group=consultant"
+ansible dbsystems -b -m file -a "path=/home/supervisor/.ssh state=directory owner=supervisor group=supervisor mode=0755"
+ansible dbsystems -b -m copy -a "src=/home/ansible/keys/supervisor/authorized_keys dest=/home/supervisor/.ssh/authorized_keys mode=0600 owner=supervisor group=supervisor"
+
+3)Ensure nginx Is Enabled and Running on All Hosts
+ansible all -b -m service -a "name=nginx state=started enabled=yes"
+
+
+=========================Making yaml file=========================
+---
+- name: creating user and putting ssh keys to group of servers
+  gather_facts: False
+  hosts: dbsystems
+  become: yes
+  tasks:
+    - name: Creating user account mentioned in /home/ansible/userlist.txt
+      user:
+         name: consultant
+
+    - name: Creating user account mentioned in /home/ansible/userlist.txt
+      user:
+         name: supervisor
+
+    - name: Change file ownership, group and permissions
+      file:
+        path: /home/consultant/.ssh
+        state: directory
+        owner: consultant
+        group: consultant
+        mode: '0755'
+
+    - name: Copying file from source to destination
+      copy:
+        src: /home/ansible/keys/consultant/authorized_keys
+        dest: /home/consultant/.ssh/authorized_keys
+        owner: consultant
+        group: consultant
+        mode: 0600
+
+
+    - name: Change file ownership, group and permissions
+      file:
+        path: /home/consultant/.ssh
+        state: directory
+        owner: supervisor
+        group: supervisor
+        mode: '0755'
+
+    - name: Copying file from source to destination
+      copy:
+        src: /home/ansible/keys/consultant/authorized_keys
+        dest: /home/consultant/.ssh/authorized_keys
+        owner: supervisor
+        group: supervisor
+        mode: 0600
+
+    - name: Ensure nginx Is Enabled and Running on All Hosts
+      service:
+        name: nginx
+        state: started
+        enabled: yes

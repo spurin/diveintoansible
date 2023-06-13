@@ -1,0 +1,12 @@
+--- #serial execution
+-  hosts: all
+     serial: 
+      - 1
+      - 3
+      - 5
+     become: yes
+     tasks: 
+       - name: Install elinks
+           package:
+             name: elinks
+             state: latest

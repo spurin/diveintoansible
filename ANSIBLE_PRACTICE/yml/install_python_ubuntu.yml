@@ -1,0 +1,10 @@
+---
+##play1
+   - hosts: ubuntu
+     tasks:
+     - raw: test -e /usr/bin/python || (apt-get update && apt-get install -y python)
+
+#play2
+#   - hosts: ubuntu
+#     tasks:
+#     - raw: (apt-get remove -y python && apt-get update)

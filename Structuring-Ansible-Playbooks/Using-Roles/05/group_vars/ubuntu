@@ -1,5 +1,0 @@
----
-ansible_become: true
-ansible_become_pass: password
-nginx_root_location: /var/www/html
-...

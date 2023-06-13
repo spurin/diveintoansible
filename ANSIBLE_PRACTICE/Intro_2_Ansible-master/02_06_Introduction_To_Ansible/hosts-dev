@@ -1,0 +1,11 @@
+# hosts-dev
+
+[webservers]
+34.227.243.63
+3.228.57.238
+
+[loadbalancers]
+3.211.134.108
+
+[local]
+control ansible_connection=local

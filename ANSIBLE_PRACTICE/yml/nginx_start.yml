@@ -1,0 +1,7 @@
+---
+
+- hosts : test-centos
+
+  tasks : 
+   - name : start nginx
+     service : name=nginx state=started

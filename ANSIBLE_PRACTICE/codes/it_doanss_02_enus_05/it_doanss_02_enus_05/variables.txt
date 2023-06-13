@@ -1,0 +1,27 @@
+# Variable naming convention says that the names should consists of letters,
+# numbers, and underscores, and they should always begin with a letter.
+listen_port
+listen
+
+# Not valid
+listen-port
+listen port
+listen.port
+123
+
+# YAML supports dictionaries which map key/value pairs.
+record:
+  field1: one
+  field2: two
+# A specific field can then be referenced from the dictionary using bracket or
+# dot notation
+record['field1']
+record.field1
+
+# Variables may be defined directly in playbooks inline.
+- hosts: webservers
+  vars:
+    http_port: 80
+
+# Variables can be defined via include files and roles. Using roles is preferred
+# since it provides a convenient organizational system.

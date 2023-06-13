@@ -1,0 +1,13 @@
+--- # run once
+-  hosts: centos
+     tasks:
+        - name: Run sleep.sh
+          command: /home/ansible/sleep.sh
+          async: 60
+          poll: 0
+          run_once: yes
+        - name: Install mariadb
+          package:
+               name: mariadb
+               state: latest
+          become: yes

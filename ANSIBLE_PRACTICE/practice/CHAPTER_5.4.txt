@@ -1,0 +1,27 @@
+---------------deploy.yml------------
+---
+- hosts: web
+  become: yes
+  tasks:
+  - name: deploy app binary
+    copy:
+      src: /home/user/app/hello
+      dest: /var/www/html/hello
+    tags:
+      - webdeploy
+
+- hosts: db
+  become: yes
+  tasks:
+  - name: deploy db script
+    copy:
+      src: /home/user/apps/script.sql
+      dest: /opt/db/scripts/script.sql
+    tags:
+      - dbdeploy
+
+$ansible-playbook deploy.yml
+$ansible-playbook deploy.yml --tags dbdeploy  //deploys perticulat tags.
+$ansible-playbook deploy.yml --tags webdeploy //deploys perticulat tags.
+$curl scoldham2/hello
+$ansible-playbook deploy.yml --skip-tags dbdeploy

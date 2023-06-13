@@ -1,0 +1,28 @@
+---
+#play1
+   - hosts: ubuntu
+     become: True
+     become_user: root
+     gather_facts: True
+     tasks:
+     - name: creating file at destination servers
+       file:
+        path: /tmp/abc.txt
+        state: touch
+        mode: 0777
+
+     - name: creating file with  content at destination servers
+       copy:
+        dest: "/tmp/abc_with_content.txt"
+        content:
+         hello sir, how are  you
+         this is a text message
+
+     - name: copying file to destination servers
+       copy:
+        src: /tmp/hello.txt
+        dest: /tmp/hello_copied_777.txt
+        mode: 0777
+        owner: onkar
+        group: onkar
+        backup: yes

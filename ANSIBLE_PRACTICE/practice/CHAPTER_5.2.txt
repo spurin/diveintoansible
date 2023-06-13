@@ -1,0 +1,38 @@
+-------reg.yaml---------
+---
+- hosts: local
+  tasks: 
+    - name: create file
+      file:
+        path: /tmp/newfile
+        state: touch
+      register: output
+
+    - debug: msg="Register output is {{output}}" 
+    - name: Edit file
+      lineinfile:
+        path: /tmp/newfile
+        line: "{{output.uid}}"
+
+--------------------LAB2-ERORR Handling--------------------
+
+---
+- hosts: localhost
+  tasks:
+    - name: downlaod transection_list
+      block:
+        - get_url:
+            url: http://apps.l33t.com/transaction_list
+            dest: /home/ansible/transaction_list
+        - replace:
+            path: /home/ansible/transaction_list
+            regexp: "#BLANKLINE"
+            replace: '\n'
+        - debug: msg="File downloaded"
+      rescue:
+        - debug: msg="133t.com appears to be down. Try again later."
+      always:
+        - debug: msg="Attemp Completed"
+
+
+

@@ -1,0 +1,38 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  sudo: yes
+  tasks:
+    - name: apt-key add
+      apt_key:
+        id: "{{ item.id | default(None) or omit }}"
+        url: "{{ item.url | default (None) or omit }}"
+        state: "{{ item.state }}"
+      with_items:
+        - { state: "present", url: "https://packagecloud.io/git-lfs/gpgkey", id: "0xskdjid" }
+        
+    - name: apt-add-repository
+	  apt_repository:
+	    repo: "{{ item.repo }}"
+		state: "{{ item.state }}"
+	  with_items:
+	    - { state: "present", repo: "deb https://packagecloud.io/git-lfs/gpgkey cosmic main" }
+		- { state: "present", repo: "ppa:git-core/ppa" }
+		
+	- name: apt install
+	  apt:
+	    name: "{{ item.name }}"
+		state: "{{ item.state }}"
+	  with_items:
+	    - { state: "absent", name: "git-flow" }
+		- { state: "latest", name: "git" }
+		- { state: "latest", name: "lfs" }
+        
+    - name: install git-flow manually
+      shell: |
+       curl -skL https://raw.githubcontent/abc/abc.sh | bash -s -- install stable
+       curl -skL https://raw.githubusercontent.com/abc/abc.bash > /etc/bash_completion.d/git-flow-completion.bash
+      args:
+        executable: "/bin/bash"
+      register: result
+      changed_when: result is not succeeded

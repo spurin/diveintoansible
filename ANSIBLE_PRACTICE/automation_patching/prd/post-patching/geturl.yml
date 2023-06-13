@@ -1,0 +1,22 @@
+- hosts: localhost
+  gather_facts: false
+  ignore_errors: true
+  tasks:
+    - name: URL TESTING
+      uri:
+        url: "{{ item }}"
+        user: oojha
+        password: abcabc*
+        method: GET
+        force_basic_auth: yes
+        return_content: yes
+      register: Returncode
+      with_items:
+          - https://ci.abc.com/joc/login
+          - https://ci.abc.com/java
+          - https://ci.abc.com/ha
+          - https://stash.abc.com/stash/dashboard
+          - https://jira.abc.com/jira/dashboard
+    - debug:
+        msg: "{{ Returncode.results | first}}"
+        

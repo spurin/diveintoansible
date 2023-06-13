@@ -1,3 +1,0 @@
-PLAYBOOK VARS (Ansible vars):
-
-{{ vars | to_nice_yaml }}

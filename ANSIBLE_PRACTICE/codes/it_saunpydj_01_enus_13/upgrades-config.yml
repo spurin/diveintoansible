@@ -1,0 +1,20 @@
+- hosts: all
+  remote_user: steve
+  become: yes
+  become_method: sudo
+
+  tasks:
+
+  - name: Upgrading all packages
+    apt: upgrade=dist
+
+  - name: Install unattended upgrades
+    apt: name=unattended-upgrades
+
+  - name: Set the auto upgrade configuration options
+    copy:
+      src: 20auto-upgrades.j2
+      dest: /etc/apt/apt.conf.d/20auto-upgrades
+      owner: root
+      group: root
+      mode: 0644
