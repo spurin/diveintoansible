@@ -29,7 +29,7 @@
               cidr_ip: 0.0.0.0/0
 
     - name: Provision a set of instances and/or capture existing information
-      amazon.aws.ec2_instance:
+      ec2_instance:
         key_name: ansible
         name: Ansible
         security_group: ansible
