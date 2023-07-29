@@ -34,7 +34,7 @@
 
     # Capture all instances that already have a tag of Ansible
     - name: Gather information about existing instances
-      amazon.aws.ec2_instance_info:
+      ec2_instance_info:
         filters:
           "tag:Name": Ansible
           instance-state-name: running
@@ -50,7 +50,7 @@
     # Even with zero instances requested, this needs to be executed 
     # to populate information about existing instances
     - name: Provision a set of instances and/or capture existing information
-      amazon.aws.ec2_instance:
+      ec2_instance:
         key_name: ansible
         name: Ansible
         security_group: ansible
