@@ -125,6 +125,10 @@
       name: ansible
       region: us-east-1
       state: absent
+    register: result
+    until: result is success
+    retries: 20
+    delay: 10
 
 # Three dots indicate the end of a YAML document
 ...
