@@ -17,3 +17,7 @@ Video course relating to this repository is available on -
 🆘 If you experience any problems with the lab or the course, please reach out to me direct, James Spurin, or flag an issue in the repositories.  I'd much rather know about an issue and in doing so, help yourself and others who encounter similar problems, Thanks!
 
 ![DiveIntoAnsible Cover](DiveIntoAnsible_Cover.png?raw=true "Dive Into Ansible")
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=spurin/diveintoansible&type=Date)](https://star-history.com/#spurin/diveintoansible&Date)
