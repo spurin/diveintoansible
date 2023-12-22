@@ -20,13 +20,13 @@
 
     - name: Copy Fact 1
       copy:
-        src: /etc/ansible/facts.d/getdate1.fact
+        src: templates/getdate1.fact
         dest: /etc/ansible/facts.d/getdate1.fact
         mode: 0755
 
     - name: Copy Fact 2
       copy:
-        src: /etc/ansible/facts.d/getdate2.fact
+        src: templates/getdate2.fact
         dest: /etc/ansible/facts.d/getdate2.fact
         mode: 0755
 
