@@ -1,0 +1,6 @@
+* text=auto eol=lf
+
+*.md diff=markdown linguist-documentation
+
+*.png binary
+*.zip binary
