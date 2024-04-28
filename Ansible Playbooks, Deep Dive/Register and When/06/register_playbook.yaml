@@ -14,7 +14,7 @@
     - name: Exploring register
       command: hostname -s
       when: ( ansible_distribution == "CentOS" and ansible_distribution_major_version | int >= 8 ) or
-            ( ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int >= 20 )
+            ( ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int >= 22 )
 
 # Three dots indicate the end of a YAML document
 ...
