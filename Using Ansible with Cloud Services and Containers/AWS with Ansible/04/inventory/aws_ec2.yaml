@@ -1,0 +1,5 @@
+plugin: amazon.aws.aws_ec2
+cache: false
+keyed_groups:
+  - prefix: tag
+    key: tags

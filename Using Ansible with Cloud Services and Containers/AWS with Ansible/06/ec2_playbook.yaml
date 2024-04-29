@@ -108,8 +108,8 @@
     - name: Terminate EC2 instances
       ec2_instance:
         state: absent
-        region: "{{ ec2_region }}"
-        instance_ids: "{{ ec2_id }}"
+        instance_ids: "{{ instance_id }}"
+        region: "{{ placement.region }}"
         wait: true
       delegate_to: localhost
 

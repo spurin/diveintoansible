@@ -55,7 +55,7 @@
         name: Ansible
         security_group: ansible
         instance_type: t2.micro
-        image_id: ami-026ebd4cfe2c043b2
+        image_id: ami-0fe630eb857a6ec83
         region: us-east-1
         wait: true
         count: "{{ instances_to_launch }}"
