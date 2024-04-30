@@ -9,6 +9,10 @@
   hosts: localhost
   connection: local
   gather_facts: false
+ 
+  # Vars: variables that will apply to the play, on all target system
+  vars:
+    desired_instances: 20
 
   # Tasks: the list of tasks that will be executed within the play, this section
   # can also be used for pre and post tasks
@@ -28,24 +32,54 @@
               to_port: 22
               cidr_ip: 0.0.0.0/0
 
-    - name: Provision a set of instances
-      ec2:
-         key_name: ansible
-         group: ansible
-         instance_type: t2.micro
-         image: ami-096fda3c22c1c990a
-         region: us-east-1
-         wait: true
-         exact_count: 20
-         count_tag:
-            Name: AnsibleNginxWebservers
-         instance_tags:
-            Name: Ansible
+    # Capture all instances that already have a tag of Ansible
+    - name: Gather information about existing instances
+      ec2_instance_info:
+        filters:
+          "tag:Name": Ansible
+          instance-state-name: running
+        region: us-east-1
+      register: ec2_info
+
+    # Compare the number of instances to launch vs those available, avoid negative numbers
+    - name: Calculate the number of instances to launch
+      set_fact:
+        # Ensure it is never less than zero
+        instances_to_launch: "{{ [0, desired_instances - (ec2_info.instances | length)] | max }}"
+
+    # Even with zero instances requested, this needs to be executed 
+    # to populate information about existing instances
+    - name: Provision a set of instances and/or capture existing information
+      ec2_instance:
+        key_name: ansible
+        name: Ansible
+        security_group: ansible
+        instance_type: t2.micro
+        image_id: ami-0fe630eb857a6ec83
+        region: us-east-1
+        wait: true
+        count: "{{ instances_to_launch }}"
       register: ec2
-      ignore_errors: true
 
     - name: Refresh inventory to ensure new instances exist in inventory
       meta: refresh_inventory
+
+-
+
+  # Target: where our play will run and options it will run with
+  hosts: tag_Name_Ansible
+  gather_facts: false
+    
+  # Task: the list of tasks that will be executed within the play, this section
+  # can also be used for pre and post tasks
+  tasks:
+    - name: Wait for SSH to be online
+      wait_for_connection:
+        delay: 10
+        timeout: 320
+      vars:
+        ansible_ssh_private_key_file: /home/ansible/.ssh/ansible.pem
+        ansible_user: ec2-user
 
 -
 
