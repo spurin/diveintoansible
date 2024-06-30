@@ -30,7 +30,7 @@
 
         - name: Rollback python3-dnspython
           package:
-            name: python-dnspython
+            name: python3-dnspython
             state: absent
 
       always:
