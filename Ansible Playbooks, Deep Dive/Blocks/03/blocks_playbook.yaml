@@ -12,13 +12,13 @@
   # can also be used for pre and post tasks
   tasks:
 
-    - name: Install patch and python-dns
+    - name: Install patch and python3-dnspython
       block:
         - name: Install patch
           package:
             name: patch
 
-        - name: Install python-dnspython
+        - name: Install python3-dnspython
           package:
             name: python-dnspython
 
@@ -28,9 +28,9 @@
             name: patch
             state: absent
 
-        - name: Rollback python-dnspython
+        - name: Rollback python3-dnspython
           package:
-            name: python-dnspython
+            name: python3-dnspython
             state: absent
 
       always:
