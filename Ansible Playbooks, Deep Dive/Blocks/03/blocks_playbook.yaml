@@ -20,7 +20,7 @@
 
         - name: Install python3-dnspython
           package:
-            name: python-dnspython
+            name: python3-dnspython
 
       rescue:
         - name: Rollback patch
